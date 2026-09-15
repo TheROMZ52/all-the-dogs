@@ -6,59 +6,43 @@ platform:
   nms-implementation: me.neznamy.tab.platforms.bukkit.paper_1_21_4.NMSImplementationProvider
   tab-version: 6.1.2
   plugins:
-    AuctionHouse: '3.7'
-    AuraSkills: 2.3.12
-    AutoMessage: 2.0.1
-    AutoPickup: '1.3'
-    AutoSmelt: 2.0.0
-    AxAFKZone: 1.12.0
-    AxTrade: 1.27.1
-    ClearLag: 1.13.0
-    CMILib: 1.5.9.9
+    ajParkour: 2.12.11
+    CommandWhitelist: 2.12.1
     Essentials: 2.21.0
     EssentialsChat: 2.21.0
     EssentialsSpawn: 2.21.0
-    FancyHolograms: 2.10.1-java21
     FancyNpcs: 2.10.1-java21+2
-    GrimAC: 2.3.74-58c8b92
+    GrimAC: 2.3.74-597f559
     ItemEdit: 3.7.10
-    Jobs: 5.2.6.6
+    LPC: 4.4.0
     LuckPerms: 5.5.71
+    Maintenance: 5.1.0
     Multiverse-Core: 5.8.1
     Multiverse-Inventories: 5.3.5
     PlaceholderAPI: 2.12.3
-    playerSit: 1.1.0
-    PvPManager: 4.0.9
-    RealMines: 1.8.3
     Shopkeepers: 2.23.11-SNAPSHOT+null
+    ShowPPG: 1.0.0
+    SimpleJumpPads: 1.3.1
+    SkinsRestorer: 15.12.5
     TAB: 6.1.2
-    Vault: 1.7.3-b131
-    ViaBackwards: 5.11.0
-    ViaVersion: 5.11.0
-    voicechat: 2.6.21
-    WorldEdit: 7.4.1+76eaf25bd
+    ViaBackwards: 5.12.0-SNAPSHOT
+    ViaRewind: 4.1.4-SNAPSHOT
+    ViaVersion: 5.12.0-SNAPSHOT
+    WorldEdit: 7.4.5+7590-b8dc4c1
     WorldGuard: 7.0.13+82fdc65
-    WorldLobbyAnchor: 1.0.1
-    ZNPCsPlus: 2.0.0
   placeholderapi-expansions:
-    auraskills: 2.3.12
-    aureliumskills: 2.3.12
-    axtrade: 1.27.1
-    clearlag: 1.13.0
-    cmil: 1.5.9.9
-    grim: 2.3.74-58c8b92
+    ajpk: 2.12.11
+    essentials: 1.5.2
+    grim: 2.3.74-597f559
     itemedit: '1.0'
-    jobsr: 5.2.6.6
+    luckperms: 5.4-R2
     multiverse-core: 5.8.1
     multiverse-inventories: 5.3.5
+    pinger: 1.0.1
     player: 2.0.9
-    pvpmanager: 4.0.9
-    realmines: 1.8.3
     server: 2.7.3
-    statistic: 2.0.2
-    team: '1.2'
-    vault: 1.8.3
-    voicechat: 2.6.21
+    skinsrestorer: 15.12.5
+    world: 1.2.3
 player:
   name: TheROMZ52
   nickname: TheROMZ52
@@ -90,18 +74,16 @@ features:
           - Test footer in world 'test'
         default:
           header:
-          - <#FFFFFF>&m                                                </#FFFF00>
-          - '&3&lServer name'
-          - '&r&7&l>> %animation:Welcome%&3 &l%player%&7&l! &7&l<<'
-          - '&r&7Online players: &f%online%'
-          - '&6Online staff: &e%staffonline%'
-          - ''
+          - '&4&l.............................................'
+          - '&#FF0000&lᴋ&#EC0000&lᴏ&#D90000&lᴛ&#C60000&lʟ&#B30000&lᴇ&#A00000&lᴛ&#8D0000&lʟ&#7A0000&lᴀ&#670000&lɴ&#540000&lᴅ'
+          - '%player%'
+          - '&c&lRank: %luckperms_prefix%'
+          - '&4&4&lOnline players: &f%online%'
+          - '&4&lOnline staff: &e%staffonline%'
           footer:
-          - '%animation:time%'
-          - '&2Ping: %ping%'
-          - ''
-          - '&r&7Visit our webpage %animation:web%'
-          - <#FFFFFF>&m                                                </#FFFF00>
+          - '&4&lPing: %ping%'
+          - '&4&lIP &4&lp12.pfmc.ir:1074'
+          - '&l.............................................'
     chain:
       world-test:
         display-condition: '%world%=test'
@@ -116,17 +98,16 @@ features:
     currently displayed design:
       name: default
       header:
-      - <#FFFFFF>§m                                                </#FFFF00>
-      - §3§lServer name
-      - §r§7§l>> §7§lWelcome_§3 §lTheROMZ52§7§l! §7§l<<
-      - '§r§7Online players: §f1'
-      - '§6Online staff: §e1'
+      - §4§l.............................................
+      - §#FF0000§lᴋ§#EC0000§lᴏ§#D90000§lᴛ§#C60000§lʟ§#B30000§lᴇ§#A00000§lᴛ§#8D0000§lʟ§#7A0000§lᴀ§#670000§lɴ§#540000§lᴅ
+      - TheROMZ52
+      - '§c§lRank: §#FF008A§lᴅ§#EC0099§lᴇ§#D900A7§lᴠ§#C600B6§lᴇ§#B300C5§lʟ§#9F00D3§lᴏ§#8C00E2§lᴘ§#7900F0§lᴇ§#6600FF§lʀ §f'
+      - '§4§4§lOnline players: §f1'
+      - '§4§lOnline staff: §e1'
       footer:
-      - §7Time §b[12:56:45 / 12:56 PM]
-      - '§2Ping: 22'
-      - ''
-      - §r§7Visit our webpage §ewww.domain.com
-      - <#FFFFFF>§m                                                </#FFFF00>
+      - '§4§lPing: 55'
+      - §4§lIP §4§lp12.pfmc.ir:1074
+      - §l.............................................
   Layout: Feature is disabled
   NameTags:
     configuration: &id001
@@ -134,13 +115,13 @@ features:
       enable-collision: true
       invisible-nametags: false
       sorting-types:
-      - GROUPS:founder,owner,developer,admin,mod,helper,builder,vip,default
+      - GROUPS:owner,admin,mod,helper,builder,vip,default
       - PLACEHOLDER_A_TO_Z:%player%
       case-sensitive-sorting: true
       can-see-friendly-invisibles: false
       disable-condition: '%world%=disabledworld'
     disabled with condition: false
-    team name: 2TheROMZ52A
+    team name: 7TheROMZ52A
     team handling paused with API: false
     invisible nametag view: false
     collision: true
@@ -195,7 +176,7 @@ features:
     current values for all players (without applying relational placeholders):
     - '| Player    | value | fancy-value | title | Disabled with condition |'
     - '|-----------|-------|-------------|-------|-------------------------|'
-    - '| TheROMZ52 | 22    | §7Ping: 22  | TAB   | false                   |'
+    - '| TheROMZ52 | 55    | §7Ping: 55  | TAB   | false                   |'
   Scoreboard:
     configuration:
       enabled: true
@@ -205,32 +186,26 @@ features:
       delay-on-join-milliseconds: 0
       scoreboards:
         scoreboard-1.20.3+:
-          title: '&#FF0909&l&ov&#D50808&l&ol&#AA0606&l&oa&#800505&l&on&#550303&l&od&#2B0202&l&om&#000000&l&oc'
+          title: '&#FF0000&lᴋ&#EC0000&lᴏ&#D90000&lᴛ&#C60000&lʟ&#B30000&lᴇ&#A00000&lᴛ&#8D0000&lʟ&#7A0000&lᴀ&#670000&lɴ&#540000&lᴅ'
           display-condition: '%player-version-id%>=765;%bedrock%=false'
           lines:
-          - ''
-          - '&#FF0909&l&on&#AA0606&l&oa&#550303&l&om&#000000&l&oe: &e%player%'
-          - '&#FF0909&l&oR&#AA0606&l&oa&#550303&l&on&#000000&l&ok: &e%group%'
-          - '&#FF0909&l&oM&#BF0707&l&oo&#800505&l&on&#400202&l&oe&#000000&l&oy: &2$%vault_eco_balance%'
-          - '&#FF0909&l&ok&#BF0707&l&oi&#800505&l&ol&#400202&l&ol&#000000&l&os: &c%statistic_player_kills%'
-          - '&#FF0909&l&oD&#CC0707&l&oe&#990505&l&oa&#660404&l&ot&#330202&l&oh&#000000&l&os: &c%statistic_deaths%'
-          - '&#FF0909&l&oP&#D50808&l&ol&#AA0606&l&oa&#800505&l&oy&#550303&l&oe&#2B0202&l&or&#000000&l&os: &a%online%'
-          - '&#00FF26&lᴠ&#00F225&lʟ&#00E624&lᴀ&#00D922&lɴ&#00CC21&lᴅ&#00C020&lᴍ&#00B31F&lᴄ&#00A71E&l.&#009A1C&lᴘ&#008D1B&lꜰ&#00811A&lᴍ&#007419&lᴄ&#006717&l.&#005B16&lɪ&#004E15&lʀ'
+          - '&c&l........................................'
+          - '&c&lName: &4&l%player%'
+          - '&c&lRank: %luckperms_prefix%'
+          - '&c&lServer: &4&l%world_name_<world>%'
+          - '&c&lPlayers: &a%online%'
+          - '&c&lIP &#FF0000&lᴘ&#FF0808&l1&#FF1111&l2&#FF1919&l.&#FF2121&lᴘ&#FF2929&lꜰ&#FF3232&lᴍ&#FF3A3A&lᴄ&#FF4242&l.&#FF4A4A&lɪ&#FF5353&lʀ&#FF5B5B&l:&#FF6363&l1&#FF6B6B&l0&#FF7474&l7&#FF7C7C&l4'
+          - '&c&l........................................'
         scoreboard:
-          title: '&#00FF26&lᴠ&#00E223&lʟ&#00C420&lᴀ&#00A71E&lɴ&#00891B&lᴅ&#006C18&lᴍ&#004E15&lᴄ'
+          title: '&#FF0000&lᴋ&#EC0000&lᴏ&#D90000&lᴛ&#C60000&lʟ&#B30000&lᴇ&#A00000&lᴛ&#8D0000&lʟ&#7A0000&lᴀ&#670000&lɴ&#540000&lᴅ'
           lines:
-          - '&7%date%'
-          - '%animation:MyAnimation1%'
-          - '&6Online:'
-          - '* &eOnline&7: &f%online%'
-          - '* &eCurrent World&7: &f%worldonline%'
-          - '* &eStaff&7: &f%staffonline%'
-          - '&6Personal Info:'
-          - '* &bRank&7: &f%group%'
-          - '* &bPing&7: &f%ping%&8ms'
-          - '* &bWorld&7: &f%world%'
-          - '&#00FF26&lᴠ&#00F225&lʟ&#00E624&lᴀ&#00D922&lɴ&#00CC21&lᴅ&#00C020&lᴍ&#00B31F&lᴄ&#00A71E&l.&#009A1C&lᴘ&#008D1B&lꜰ&#00811A&lᴍ&#007419&lᴄ&#006717&l.&#005B16&lɪ&#004E15&lʀ'
-          - '%animation:MyAnimation1%'
+          - '&c&l........................................'
+          - '&c&lName: &4&l%player%'
+          - '&c&lRank: %luckperms_prefix%'
+          - '&c&lServer: &4&l%world_name_<world>%'
+          - '&c&lPlayers: &a%online%'
+          - '&c&lIP &#FF0000&lᴘ&#FF0808&l1&#FF1111&l2&#FF1919&l.&#FF2121&lᴘ&#FF2929&lꜰ&#FF3232&lᴍ&#FF3A3A&lᴄ&#FF4242&l.&#FF4A4A&lɪ&#FF5353&lʀ&#FF5B5B&l:&#FF6363&l1&#FF6B6B&l0&#FF7474&l7&#FF7C7C&l4'
+          - '&c&l........................................'
     chain:
       scoreboard-1.20.3+:
         display-condition: '%player-version-id%>=765;%bedrock%=false'
@@ -246,61 +221,56 @@ features:
     scoreboard visible (= not toggled by user): true
     currently displayed scoreboard:
       name: scoreboard-1.20.3+
-      title: §#FF0909§l§ov§#D50808§l§ol§#AA0606§l§oa§#800505§l§on§#550303§l§od§#2B0202§l§om§#000000§l§oc
+      title: §#FF0000§lᴋ§#EC0000§lᴏ§#D90000§lᴛ§#C60000§lʟ§#B30000§lᴇ§#A00000§lᴛ§#8D0000§lʟ§#7A0000§lᴀ§#670000§lɴ§#540000§lᴅ
       lines:
-      - ' || '
-      - '§#FF0909§l§on§#AA0606§l§oa§#550303§l§om§#000000§l§oe: §eTheROMZ52 || '
-      - '§#FF0909§l§oR§#AA0606§l§oa§#550303§l§on§#000000§l§ok: §edeveloper || '
-      - '§#FF0909§l§oM§#BF0707§l§oo§#800505§l§on§#400202§l§oe§#000000§l§oy: §2$0 || '
-      - '§#FF0909§l§ok§#BF0707§l§oi§#800505§l§ol§#400202§l§ol§#000000§l§os: §c0 || '
-      - '§#FF0909§l§oD§#CC0707§l§oe§#990505§l§oa§#660404§l§ot§#330202§l§oh§#000000§l§os: §c7 || '
-      - '§#FF0909§l§oP§#D50808§l§ol§#AA0606§l§oa§#800505§l§oy§#550303§l§oe§#2B0202§l§or§#000000§l§os: §a1 || '
-      - '§#00FF26§lᴠ§#00F225§lʟ§#00E624§lᴀ§#00D922§lɴ§#00CC21§lᴅ§#00C020§lᴍ§#00B31F§lᴄ§#00A71E§l.§#009A1C§lᴘ§#008D1B§lꜰ§#00811A§lᴍ§#007419§lᴄ§#006717§l.§#005B16§lɪ§#004E15§lʀ || '
+      - '§c§l........................................ || '
+      - '§c§lName: §4§lTheROMZ52 || '
+      - '§c§lRank: §#FF008A§lᴅ§#EC0099§lᴇ§#D900A7§lᴠ§#C600B6§lᴇ§#B300C5§lʟ§#9F00D3§lᴏ§#8C00E2§lᴘ§#7900F0§lᴇ§#6600FF§lʀ §f || '
+      - '§c§lServer: §4§lworld || '
+      - '§c§lPlayers: §a1 || '
+      - '§c§lIP §#FF0000§lᴘ§#FF0808§l1§#FF1111§l2§#FF1919§l.§#FF2121§lᴘ§#FF2929§lꜰ§#FF3232§lᴍ§#FF3A3A§lᴄ§#FF4242§l.§#FF4A4A§lɪ§#FF5353§lʀ§#FF5B5B§l:§#FF6363§l1§#FF6B6B§l0§#FF7474§l7§#FF7C7C§l4 || '
+      - '§c§l........................................ || '
   Sorting:
     configuration: *id001
-    short-team-name: 2TheROMZ52A
-    full-team-name: 2TheROMZ52A
+    short-team-name: 7TheROMZ52A
+    full-team-name: 7TheROMZ52A
     forced-team-name: null
     players in the order they appear in tablist along with returned values of sorting types:
-    - '| Player    | GROUPS                 | PLACEHOLDER_A_TO_Z:%player% |'
-    - '|-----------|------------------------|-----------------------------|'
-    - '| TheROMZ52 | developer (#3 in list) | TheROMZ52                   |'
+    - '| Player    | GROUPS                  | PLACEHOLDER_A_TO_Z:%player% |'
+    - '|-----------|-------------------------|-----------------------------|'
+    - '| TheROMZ52 | developer (not in list) | TheROMZ52                   |'
   SpectatorFix: Feature is disabled
 minimessage:
   support is enabled in config: true
   MiniMessage library is available: true
-  TAB's MiniMessage instance: net.kyori.adventure.text.minimessage.MiniMessageImpl@27cfca1a
+  TAB's MiniMessage instance: net.kyori.adventure.text.minimessage.MiniMessageImpl@590659e3
   '... and therefore MiniMessage works': true
 placeholders:
   current-placeholder-values:
     server:
-    - '| Identifier    | Refresh | Current value         |'
-    - '|---------------|---------|-----------------------|'
-    - '| %staffonline% | 2000    | 1                     |'
-    - '| %time%        | 1000    | [12:56:45 / 12:56 PM] |'
-    - '| %online%      | 1000    | 1                     |'
-    - '| %date%        | 60000   | 15.09.2026            |'
+    - '| Identifier    | Refresh | Current value        |'
+    - '|---------------|---------|----------------------|'
+    - '| %staffonline% | 2000    | 1                    |'
+    - '| %time%        | 1000    | [21:35:17 / 9:35 PM] |'
+    - '| %online%      | 1000    | 1                    |'
+    - '| %date%        | 60000   | 15.09.2026           |'
     player:
-    - '| Identifier               | Refresh | Current value                                                                                          |'
-    - '|--------------------------|---------|--------------------------------------------------------------------------------------------------------|'
-    - '| %animation:web%          | 200     | §ewww.domain.com                                                                                       |'
-    - '| %world%                  | -1      | world                                                                                                  |'
-    - '| %ping%                   | 500     | 22                                                                                                     |'
-    - '| %essentials_nickname%    | 500     | %essentials_nickname%                                                                                  |'
-    - '| %vault_eco_balance%      | 500     | 0                                                                                                      |'
-    - '| %vanished%               | 1000    | false                                                                                                  |'
-    - '| %luckperms-prefix%       | 1000    | &#FF008A&lᴅ&#EC0099&lᴇ&#D900A7&lᴠ&#C600B6&lᴇ&#B300C5&lʟ&#9F00D3&lᴏ&#8C00E2&lᴘ&#7900F0&lᴇ&#6600FF&lʀ &f |'
-    - '| %luckperms-suffix%       | 1000    |                                                                                                        |'
-    - '| %bedrock%                | -1      | false                                                                                                  |'
-    - '| %statistic_player_kills% | 500     | 0                                                                                                      |'
-    - '| %animation:time%         | 1000    | §7Time §b[12:56:45 / 12:56 PM]                                                                         |'
-    - '| %player%                 | -1      | TheROMZ52                                                                                              |'
-    - '| %player-version-id%      | -1      | 772                                                                                                    |'
-    - '| %animation:Welcome%      | 400     | §7§lWelcome_                                                                                           |'
-    - '| %statistic_deaths%       | 500     | 7                                                                                                      |'
-    - '| %collision%              | 500     | true                                                                                                   |'
-    - '| %group%                  | -1      | developer                                                                                              |'
-    - '| %invisible%              | 500     | false                                                                                                  |'
+    - '| Identifier            | Refresh | Current value                                                                                          |'
+    - '|-----------------------|---------|--------------------------------------------------------------------------------------------------------|'
+    - '| %world%               | -1      | world                                                                                                  |'
+    - '| %ping%                | 500     | 55                                                                                                     |'
+    - '| %essentials_nickname% | 500     | TheROMZ52                                                                                              |'
+    - '| %vanished%            | 1000    | false                                                                                                  |'
+    - '| %luckperms-prefix%    | 1000    | &#FF008A&lᴅ&#EC0099&lᴇ&#D900A7&lᴠ&#C600B6&lᴇ&#B300C5&lʟ&#9F00D3&lᴏ&#8C00E2&lᴘ&#7900F0&lᴇ&#6600FF&lʀ &f |'
+    - '| %luckperms-suffix%    | 1000    |                                                                                                        |'
+    - '| %bedrock%             | -1      | false                                                                                                  |'
+    - '| %player%              | -1      | TheROMZ52                                                                                              |'
+    - '| %player-version-id%   | -1      | 772                                                                                                    |'
+    - '| %luckperms_prefix%    | 500     | &#FF008A&lᴅ&#EC0099&lᴇ&#D900A7&lᴠ&#C600B6&lᴇ&#B300C5&lʟ&#9F00D3&lᴏ&#8C00E2&lᴘ&#7900F0&lᴇ&#6600FF&lʀ &f |'
+    - '| %world_name_<world>%  | 500     | world                                                                                                  |'
+    - '| %collision%           | 500     | true                                                                                                   |'
+    - '| %group%               | -1      | %group%                                                                                                |'
+    - '| %invisible%           | 500     | false                                                                                                  |'
     relational: {}
 tablist:
   expected display names (using legacy text):
@@ -311,39 +281,35 @@ scoreboard:
   objectives:
     TAB-Scoreboard:
       displaySlot: SIDEBAR
-      title: me.neznamy.tab.shared.chat.component.TabTextComponent@2b058de1
+      title: me.neznamy.tab.shared.chat.component.TabTextComponent@5f90467
       healthDisplay: INTEGER
       numberFormat: ''
       scores:
         §0§1§r:
-          value: 8
-          displayName: null
-          numberFormat: ''
-        §0§2§r:
           value: 7
           displayName: null
           numberFormat: ''
-        §0§5§r:
-          value: 4
-          displayName: null
-          numberFormat: ''
-        §0§6§r:
-          value: 3
-          displayName: null
-          numberFormat: ''
-        §0§3§r:
+        §0§2§r:
           value: 6
           displayName: null
           numberFormat: ''
-        §0§4§r:
-          value: 5
+        §0§5§r:
+          value: 3
           displayName: null
           numberFormat: ''
-        §0§7§r:
+        §0§6§r:
           value: 2
           displayName: null
           numberFormat: ''
-        §0§8§r:
+        §0§3§r:
+          value: 5
+          displayName: null
+          numberFormat: ''
+        §0§4§r:
+          value: 4
+          displayName: null
+          numberFormat: ''
+        §0§7§r:
           value: 1
           displayName: null
           numberFormat: ''
@@ -354,12 +320,12 @@ scoreboard:
       numberFormat: ''
       scores:
         TheROMZ52:
-          value: 22
+          value: 55
           displayName: null
-          numberFormat: '§7Ping: 22'
+          numberFormat: '§7Ping: 55'
   teams:
     TAB-Sidebar-7:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@328592ea
+      prefix: §c§l........................................
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -367,17 +333,8 @@ scoreboard:
       options: 0
       players:
       - §0§7§r
-    TAB-Sidebar-8:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@46183687
-      suffix: ''
-      color: RESET
-      visibility: NEVER
-      collision: NEVER
-      options: 0
-      players:
-      - §0§8§r
     TAB-Sidebar-5:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@1fdebb44
+      prefix: '§c§lPlayers: §a1'
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -386,7 +343,7 @@ scoreboard:
       players:
       - §0§5§r
     TAB-Sidebar-6:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@18b357db
+      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@1c68000
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -394,8 +351,17 @@ scoreboard:
       options: 0
       players:
       - §0§6§r
+    7TheROMZ52A:
+      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@44c40e5c
+      suffix: ''
+      color: WHITE
+      visibility: ALWAYS
+      collision: ALWAYS
+      options: 0
+      players:
+      - TheROMZ52
     TAB-Sidebar-3:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@6bf84e5
+      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@38dd08df
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -404,7 +370,7 @@ scoreboard:
       players:
       - §0§3§r
     TAB-Sidebar-4:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@19426bb
+      prefix: '§c§lServer: §4§lworld'
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -413,7 +379,7 @@ scoreboard:
       players:
       - §0§4§r
     TAB-Sidebar-1:
-      prefix: ''
+      prefix: §c§l........................................
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -421,17 +387,8 @@ scoreboard:
       options: 0
       players:
       - §0§1§r
-    2TheROMZ52A:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@6b7aa956
-      suffix: ''
-      color: WHITE
-      visibility: ALWAYS
-      collision: ALWAYS
-      options: 0
-      players:
-      - TheROMZ52
     TAB-Sidebar-2:
-      prefix: me.neznamy.tab.shared.chat.component.TabTextComponent@69f5266d
+      prefix: '§c§lName: §4§lTheROMZ52'
       suffix: ''
       color: RESET
       visibility: NEVER
@@ -563,18 +520,16 @@ files:
           - Test footer in world 'test'
         default:
           header:
-          - <#FFFFFF>&m                                                </#FFFF00>
-          - '&3&lServer name'
-          - '&r&7&l>> %animation:Welcome%&3 &l%player%&7&l! &7&l<<'
-          - '&r&7Online players: &f%online%'
-          - '&6Online staff: &e%staffonline%'
-          - ''
+          - '&4&l.............................................'
+          - '&#FF0000&lᴋ&#EC0000&lᴏ&#D90000&lᴛ&#C60000&lʟ&#B30000&lᴇ&#A00000&lᴛ&#8D0000&lʟ&#7A0000&lᴀ&#670000&lɴ&#540000&lᴅ'
+          - '%player%'
+          - '&c&lRank: %luckperms_prefix%'
+          - '&4&4&lOnline players: &f%online%'
+          - '&4&lOnline staff: &e%staffonline%'
           footer:
-          - '%animation:time%'
-          - '&2Ping: %ping%'
-          - ''
-          - '&r&7Visit our webpage %animation:web%'
-          - <#FFFFFF>&m                                                </#FFFF00>
+          - '&4&lPing: %ping%'
+          - '&4&lIP &4&lp12.pfmc.ir:1074'
+          - '&l.............................................'
     tablist-name-formatting:
       enabled: true
       disable-condition: '%world%=disabledworld'
@@ -583,7 +538,7 @@ files:
       enable-collision: true
       invisible-nametags: false
       sorting-types:
-      - GROUPS:founder,owner,developer,admin,mod,helper,builder,vip,default
+      - GROUPS:owner,admin,mod,helper,builder,vip,default
       - PLACEHOLDER_A_TO_Z:%player%
       case-sensitive-sorting: true
       can-see-friendly-invisibles: false
@@ -615,7 +570,7 @@ files:
           style: PROGRESS
           color: '%animation:barcolors%'
           progress: '100'
-          text: '&fWebsite: &bwww.domain.com'
+          text: '&fWebsite: &bp12.pfmc.ir:1074'
     scoreboard:
       enabled: true
       toggle-command: /sb
@@ -624,32 +579,26 @@ files:
       delay-on-join-milliseconds: 0
       scoreboards:
         scoreboard-1.20.3+:
-          title: '&#FF0909&l&ov&#D50808&l&ol&#AA0606&l&oa&#800505&l&on&#550303&l&od&#2B0202&l&om&#000000&l&oc'
+          title: '&#FF0000&lᴋ&#EC0000&lᴏ&#D90000&lᴛ&#C60000&lʟ&#B30000&lᴇ&#A00000&lᴛ&#8D0000&lʟ&#7A0000&lᴀ&#670000&lɴ&#540000&lᴅ'
           display-condition: '%player-version-id%>=765;%bedrock%=false'
           lines:
-          - ''
-          - '&#FF0909&l&on&#AA0606&l&oa&#550303&l&om&#000000&l&oe: &e%player%'
-          - '&#FF0909&l&oR&#AA0606&l&oa&#550303&l&on&#000000&l&ok: &e%group%'
-          - '&#FF0909&l&oM&#BF0707&l&oo&#800505&l&on&#400202&l&oe&#000000&l&oy: &2$%vault_eco_balance%'
-          - '&#FF0909&l&ok&#BF0707&l&oi&#800505&l&ol&#400202&l&ol&#000000&l&os: &c%statistic_player_kills%'
-          - '&#FF0909&l&oD&#CC0707&l&oe&#990505&l&oa&#660404&l&ot&#330202&l&oh&#000000&l&os: &c%statistic_deaths%'
-          - '&#FF0909&l&oP&#D50808&l&ol&#AA0606&l&oa&#800505&l&oy&#550303&l&oe&#2B0202&l&or&#000000&l&os: &a%online%'
-          - '&#00FF26&lᴠ&#00F225&lʟ&#00E624&lᴀ&#00D922&lɴ&#00CC21&lᴅ&#00C020&lᴍ&#00B31F&lᴄ&#00A71E&l.&#009A1C&lᴘ&#008D1B&lꜰ&#00811A&lᴍ&#007419&lᴄ&#006717&l.&#005B16&lɪ&#004E15&lʀ'
+          - '&c&l........................................'
+          - '&c&lName: &4&l%player%'
+          - '&c&lRank: %luckperms_prefix%'
+          - '&c&lServer: &4&l%world_name_<world>%'
+          - '&c&lPlayers: &a%online%'
+          - '&c&lIP &#FF0000&lᴘ&#FF0808&l1&#FF1111&l2&#FF1919&l.&#FF2121&lᴘ&#FF2929&lꜰ&#FF3232&lᴍ&#FF3A3A&lᴄ&#FF4242&l.&#FF4A4A&lɪ&#FF5353&lʀ&#FF5B5B&l:&#FF6363&l1&#FF6B6B&l0&#FF7474&l7&#FF7C7C&l4'
+          - '&c&l........................................'
         scoreboard:
-          title: '&#00FF26&lᴠ&#00E223&lʟ&#00C420&lᴀ&#00A71E&lɴ&#00891B&lᴅ&#006C18&lᴍ&#004E15&lᴄ'
+          title: '&#FF0000&lᴋ&#EC0000&lᴏ&#D90000&lᴛ&#C60000&lʟ&#B30000&lᴇ&#A00000&lᴛ&#8D0000&lʟ&#7A0000&lᴀ&#670000&lɴ&#540000&lᴅ'
           lines:
-          - '&7%date%'
-          - '%animation:MyAnimation1%'
-          - '&6Online:'
-          - '* &eOnline&7: &f%online%'
-          - '* &eCurrent World&7: &f%worldonline%'
-          - '* &eStaff&7: &f%staffonline%'
-          - '&6Personal Info:'
-          - '* &bRank&7: &f%group%'
-          - '* &bPing&7: &f%ping%&8ms'
-          - '* &bWorld&7: &f%world%'
-          - '&#00FF26&lᴠ&#00F225&lʟ&#00E624&lᴀ&#00D922&lɴ&#00CC21&lᴅ&#00C020&lᴍ&#00B31F&lᴄ&#00A71E&l.&#009A1C&lᴘ&#008D1B&lꜰ&#00811A&lᴍ&#007419&lᴄ&#006717&l.&#005B16&lɪ&#004E15&lʀ'
-          - '%animation:MyAnimation1%'
+          - '&c&l........................................'
+          - '&c&lName: &4&l%player%'
+          - '&c&lRank: %luckperms_prefix%'
+          - '&c&lServer: &4&l%world_name_<world>%'
+          - '&c&lPlayers: &a%online%'
+          - '&c&lIP &#FF0000&lᴘ&#FF0808&l1&#FF1111&l2&#FF1919&l.&#FF2121&lᴘ&#FF2929&lꜰ&#FF3232&lᴍ&#FF3A3A&lᴄ&#FF4242&l.&#FF4A4A&lɪ&#FF5353&lʀ&#FF5B5B&l:&#FF6363&l1&#FF6B6B&l0&#FF7474&l7&#FF7C7C&l4'
+          - '&c&l........................................'
     layout:
       enabled: false
       direction: COLUMNS
