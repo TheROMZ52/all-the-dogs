@@ -9,10 +9,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.join(__dirname, 'public');
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 8787);
-const MAX_PORTS = 5000;
-const MAX_TARGETS = 256;
-const MAX_PROBES = 5000;
-const MAX_CONCURRENCY = 128;
 const DEFAULT_TIMEOUT = 1200;
 
 const commonServices = new Map([
@@ -87,7 +83,6 @@ function parseIpv4Range(expression) {
   let end = ipv4ToInt(range[2].trim());
   if (start > end) [start, end] = [end, start];
   const count = end - start + 1;
-  if (count > MAX_TARGETS) throw new Error(`An IP range cannot exceed ${MAX_TARGETS} hosts.`);
   return Array.from({ length: count }, (_, index) => intToIpv4(start + index));
 }
 
@@ -100,7 +95,6 @@ function parseCidr(expression) {
   const mask = prefix === 0 ? 0 : (0xffffffff << (32 - prefix)) >>> 0;
   const network = (ip & mask) >>> 0;
   const count = 2 ** (32 - prefix);
-  if (count > MAX_TARGETS) throw new Error(`A CIDR range cannot exceed ${MAX_TARGETS} hosts. Use /24 or smaller.`);
   return Array.from({ length: count }, (_, index) => intToIpv4((network + index) >>> 0));
 }
 
@@ -121,7 +115,6 @@ function parseTargets(input) {
       if (item.includes('-')) throw new Error(`Invalid IP range: ${item}`);
       values.add(item.replace(/^\[|\]$/g, ''));
     }
-    if (values.size > MAX_TARGETS) throw new Error(`Maximum scan size is ${MAX_TARGETS} hosts.`);
   }
 
   return [...values];
@@ -141,7 +134,6 @@ function parsePorts(input) {
       let end = Number(range[2]);
       if (start > end) [start, end] = [end, start];
       if (start < 1 || end > 65535) throw new Error('Ports must be between 1 and 65535.');
-      if (end - start + 1 > MAX_PORTS) throw new Error(`A single range cannot exceed ${MAX_PORTS} ports.`);
       for (let p = start; p <= end; p++) values.add(p);
     } else if (/^\d+$/.test(item)) {
       const p = Number(item);
@@ -150,7 +142,6 @@ function parsePorts(input) {
     } else {
       throw new Error(`Invalid port expression: ${item}`);
     }
-    if (values.size > MAX_PORTS) throw new Error(`Maximum scan size is ${MAX_PORTS} ports.`);
   }
 
   return [...values].sort((a, b) => a - b);
@@ -197,9 +188,8 @@ async function runScan(body, write) {
   const targets = parseTargets(body.host);
   const ports = parsePorts(body.ports);
   const probes = targets.length * ports.length;
-  if (probes > MAX_PROBES) throw new Error(`This scan would run ${probes.toLocaleString()} probes. Maximum is ${MAX_PROBES.toLocaleString()}. Reduce the IP range or port list.`);
   const timeout = Math.min(Math.max(Number(body.timeout) || DEFAULT_TIMEOUT, 250), 5000);
-  const concurrency = Math.min(Math.max(Number(body.concurrency) || 64, 1), MAX_CONCURRENCY);
+  const concurrency = Math.max(Number(body.concurrency) || 64, 1);
   const startedAt = new Date().toISOString();
   let completed = 0;
   const results = [];
