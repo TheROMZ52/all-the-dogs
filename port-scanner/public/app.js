@@ -43,10 +43,11 @@ function resetStats() {
 function renderRows() {
   const visible = openOnly ? rows.filter(item => item.status === 'open') : rows;
   if (!visible.length) {
-    resultsBody.innerHTML = `<tr class="empty-row"><td colspan="4">${rows.length ? 'No open ports in this result set.' : 'Run a scan to populate results.'}</td></tr>`;
+    resultsBody.innerHTML = `<tr class="empty-row"><td colspan="5">${rows.length ? 'No open ports in this result set.' : 'Run a scan to populate results.'}</td></tr>`;
     return;
   }
   resultsBody.innerHTML = visible.map(item => `<tr>
+    <td class="host-cell">${escapeHtml(item.address)}</td>
     <td class="port-cell">${fmt(item.port)}</td>
     <td>${escapeHtml(item.service)}</td>
     <td><span class="state ${item.status}">${item.status.toUpperCase()}</span></td>
@@ -89,9 +90,9 @@ async function consumeScan(payload) {
       if (!line.trim()) continue;
       const event = JSON.parse(line);
       if (event.type === 'start') {
-        resolvedHost.textContent = event.address;
-        resolvedFamily.textContent = `${event.family} · ${event.total.toLocaleString()} ports`;
-        targetSummary.textContent = `${event.target} → ${event.address}`;
+        resolvedHost.textContent = event.hosts === 1 ? event.resolvedTargets[0]?.address || '—' : `${fmt(event.hosts)} hosts`;
+        resolvedFamily.textContent = `${fmt(event.ports)} ports · ${fmt(event.total)} probes`;
+        targetSummary.textContent = event.hosts === 1 ? `${event.targets[0]} → ${event.resolvedTargets[0]?.address || '—'}` : `${fmt(event.hosts)} hosts · ${fmt(event.ports)} ports`;
         progressShell.hidden = false;
         progressBar.style.width = '0%';
         progressText.textContent = `0 / ${fmt(event.total)}`;
@@ -100,9 +101,9 @@ async function consumeScan(payload) {
         addResult(event.result, event.completed, event.total);
       } else if (event.type === 'done') {
         const s = event.summary;
-        targetSummary.textContent = `${s.target} → ${s.address} · finished in ${s.elapsedMs.toLocaleString()} ms`;
-        resolvedHost.textContent = s.address;
-        resolvedFamily.textContent = `${s.family} · ${s.total.toLocaleString()} ports`;
+        targetSummary.textContent = `${fmt(s.targets)} hosts · ${fmt(s.ports)} ports · finished in ${fmt(s.elapsedMs)} ms`;
+        resolvedHost.textContent = s.targets === 1 ? (rows[0]?.address || '—') : `${fmt(s.targets)} hosts`;
+        resolvedFamily.textContent = `${fmt(s.ports)} ports · ${fmt(s.total)} probes`;
         progressBar.style.width = '100%';
         progressText.textContent = `${fmt(s.total)} / ${fmt(s.total)}`;
         progressPercent.textContent = '100%';
@@ -119,17 +120,12 @@ form.addEventListener('submit', async event => {
   resetStats();
   renderRows();
   setRunning(true);
-  targetSummary.textContent = 'Resolving target…';
+  targetSummary.textContent = 'Resolving targets…';
   progressShell.hidden = false;
   resolvedHost.textContent = 'Resolving…';
   resolvedFamily.textContent = '—';
   try {
-    await consumeScan({
-      host: hostInput.value.trim(),
-      ports: portsInput.value.trim(),
-      timeout: Number(timeoutInput.value),
-      concurrency: Number(concurrencyInput.value)
-    });
+    await consumeScan({ host: hostInput.value.trim(), ports: portsInput.value.trim(), timeout: Number(timeoutInput.value), concurrency: Number(concurrencyInput.value) });
   } catch (error) {
     targetSummary.textContent = error.message || 'Scan failed.';
     resolvedHost.textContent = '—';
@@ -138,6 +134,11 @@ form.addEventListener('submit', async event => {
     setRunning(false);
   }
 });
+
+document.querySelectorAll('[data-host-preset]').forEach(button => button.addEventListener('click', () => {
+  hostInput.value = button.dataset.hostPreset;
+  hostInput.focus();
+}));
 
 document.querySelectorAll('[data-preset]').forEach(button => button.addEventListener('click', () => {
   portsInput.value = button.dataset.preset;
