@@ -10,6 +10,8 @@ const publicDir = path.join(__dirname, 'public');
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 8787);
 const MAX_PORTS = 5000;
+const MAX_TARGETS = 256;
+const MAX_PROBES = 5000;
 const MAX_CONCURRENCY = 128;
 const DEFAULT_TIMEOUT = 1200;
 
@@ -67,6 +69,64 @@ function parseBody(req) {
   });
 }
 
+function ipv4ToInt(ip) {
+  const parts = ip.split('.').map(Number);
+  if (parts.length !== 4 || parts.some(part => !Number.isInteger(part) || part < 0 || part > 255)) throw new Error(`Invalid IPv4 address: ${ip}`);
+  return (((parts[0] * 256 + parts[1]) * 256 + parts[2]) * 256 + parts[3]) >>> 0;
+}
+
+function intToIpv4(value) {
+  return [value >>> 24, (value >>> 16) & 255, (value >>> 8) & 255, value & 255].join('.');
+}
+
+function parseIpv4Range(expression) {
+  const range = expression.match(/^(.+?)\s*-\s*(.+)$/);
+  if (!range) return null;
+  if (net.isIP(range[1].trim()) !== 4 || net.isIP(range[2].trim()) !== 4) throw new Error(`Invalid IPv4 range: ${expression}`);
+  let start = ipv4ToInt(range[1].trim());
+  let end = ipv4ToInt(range[2].trim());
+  if (start > end) [start, end] = [end, start];
+  const count = end - start + 1;
+  if (count > MAX_TARGETS) throw new Error(`An IP range cannot exceed ${MAX_TARGETS} hosts.`);
+  return Array.from({ length: count }, (_, index) => intToIpv4(start + index));
+}
+
+function parseCidr(expression) {
+  const match = expression.match(/^([^/]+)\/(\d{1,2})$/);
+  if (!match || net.isIP(match[1]) !== 4) return null;
+  const prefix = Number(match[2]);
+  if (prefix < 0 || prefix > 32) throw new Error(`Invalid CIDR prefix: ${expression}`);
+  const ip = ipv4ToInt(match[1]);
+  const mask = prefix === 0 ? 0 : (0xffffffff << (32 - prefix)) >>> 0;
+  const network = (ip & mask) >>> 0;
+  const count = 2 ** (32 - prefix);
+  if (count > MAX_TARGETS) throw new Error(`A CIDR range cannot exceed ${MAX_TARGETS} hosts. Use /24 or smaller.`);
+  return Array.from({ length: count }, (_, index) => intToIpv4((network + index) >>> 0));
+}
+
+function parseTargets(input) {
+  const raw = String(input ?? '').trim();
+  if (!raw) throw new Error('Enter a host, IP, IP range, or CIDR range.');
+  const values = new Set();
+
+  for (const part of raw.split(',')) {
+    const item = part.trim();
+    if (!item) continue;
+    const cidr = parseCidr(item);
+    const range = cidr || parseIpv4Range(item);
+    if (range) {
+      for (const address of range) values.add(address);
+    } else {
+      if (item.includes('/')) throw new Error(`Invalid CIDR target: ${item}`);
+      if (item.includes('-')) throw new Error(`Invalid IP range: ${item}`);
+      values.add(item.replace(/^\[|\]$/g, ''));
+    }
+    if (values.size > MAX_TARGETS) throw new Error(`Maximum scan size is ${MAX_TARGETS} hosts.`);
+  }
+
+  return [...values];
+}
+
 function parsePorts(input) {
   const raw = String(input ?? '').trim();
   if (!raw) throw new Error('Enter at least one port.');
@@ -100,9 +160,7 @@ function normalizeHost(input) {
   const value = String(input ?? '').trim();
   if (!value) throw new Error('Enter a host or IP address.');
   if (value.length > 253) throw new Error('Host name is too long.');
-  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(value)) {
-    throw new Error('Enter only a host or IP, without http:// or https://');
-  }
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(value)) throw new Error('Enter only a host or IP, without http:// or https://');
   return value.replace(/^\[|\]$/g, '');
 }
 
@@ -120,65 +178,67 @@ function probe(address, port, timeout, family) {
     const started = performance.now();
     let settled = false;
     const socket = new net.Socket();
-
-    const finish = (status) => {
+    const finish = status => {
       if (settled) return;
       settled = true;
       const latency = Math.round(performance.now() - started);
       socket.destroy();
-      resolve({ port, status, latency, service: commonServices.get(port) || 'Unknown' });
+      resolve({ address, port, status, latency, service: commonServices.get(port) || 'Unknown' });
     };
-
     socket.setTimeout(timeout);
     socket.once('connect', () => finish('open'));
     socket.once('timeout', () => finish('timeout'));
-    socket.once('error', error => {
-      finish(error?.code === 'ECONNREFUSED' ? 'closed' : 'unreachable');
-    });
-
+    socket.once('error', error => finish(error?.code === 'ECONNREFUSED' ? 'closed' : 'unreachable'));
     socket.connect({ host: address, port, family: family === 6 ? 6 : 4 });
   });
 }
 
 async function runScan(body, write) {
-  const target = normalizeHost(body.host);
+  const targets = parseTargets(body.host);
   const ports = parsePorts(body.ports);
+  const probes = targets.length * ports.length;
+  if (probes > MAX_PROBES) throw new Error(`This scan would run ${probes.toLocaleString()} probes. Maximum is ${MAX_PROBES.toLocaleString()}. Reduce the IP range or port list.`);
   const timeout = Math.min(Math.max(Number(body.timeout) || DEFAULT_TIMEOUT, 250), 5000);
   const concurrency = Math.min(Math.max(Number(body.concurrency) || 64, 1), MAX_CONCURRENCY);
-  const resolved = await resolveHost(target);
   const startedAt = new Date().toISOString();
   let completed = 0;
   const results = [];
   let cursor = 0;
+  const resolvedTargets = [];
 
-  write({ type: 'start', target, address: resolved.address, family: resolved.family, total: ports.length, timeout, concurrency, startedAt });
+  for (const target of targets) {
+    resolvedTargets.push(await resolveHost(target));
+  }
 
+  write({ type: 'start', targets, resolvedTargets, total: probes, hosts: targets.length, ports: ports.length, timeout, concurrency, startedAt });
+
+  const jobs = resolvedTargets.flatMap(resolved => ports.map(port => ({ resolved, port })));
   const worker = async () => {
     while (true) {
       const index = cursor++;
-      if (index >= ports.length) return;
-      const result = await probe(resolved.address, ports[index], timeout, resolved.family === 'IPv6' ? 6 : 4);
+      if (index >= jobs.length) return;
+      const job = jobs[index];
+      const result = await probe(job.resolved.address, job.port, timeout, job.resolved.family === 'IPv6' ? 6 : 4);
       results.push(result);
       completed++;
-      write({ type: 'result', result, completed, total: ports.length });
+      write({ type: 'result', result, completed, total: jobs.length });
     }
   };
 
-  await Promise.all(Array.from({ length: Math.min(concurrency, ports.length) }, worker));
-  results.sort((a, b) => a.port - b.port);
-  const duration = Math.round(performance.now());
+  await Promise.all(Array.from({ length: Math.min(concurrency, jobs.length) }, worker));
+  results.sort((a, b) => a.address.localeCompare(b.address, undefined, { numeric: true }) || a.port - b.port);
+  const elapsedMs = Math.round(performance.now());
   write({
     type: 'done',
     summary: {
-      target,
-      address: resolved.address,
-      family: resolved.family,
+      targets: targets.length,
+      ports: ports.length,
       total: results.length,
       open: results.filter(r => r.status === 'open').length,
       closed: results.filter(r => r.status === 'closed').length,
       timeout: results.filter(r => r.status === 'timeout').length,
       unreachable: results.filter(r => r.status === 'unreachable').length,
-      elapsedMs: duration,
+      elapsedMs,
       finishedAt: new Date().toISOString()
     }
   });
@@ -206,10 +266,7 @@ async function serveStatic(req, res) {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (req.method === 'GET' && url.pathname === '/api/health') {
-      return sendJson(res, 200, { ok: true, service: 'port-scanner' });
-    }
-
+    if (req.method === 'GET' && url.pathname === '/api/health') return sendJson(res, 200, { ok: true, service: 'port-scanner' });
     if (req.method === 'POST' && url.pathname === '/api/scan') {
       const body = await parseBody(req);
       res.writeHead(200, {
@@ -228,7 +285,6 @@ const server = http.createServer(async (req, res) => {
       }
       return;
     }
-
     if (req.method === 'GET') return serveStatic(req, res);
     sendJson(res, 405, { error: 'Method not allowed' });
   } catch (error) {
@@ -236,6 +292,4 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(port, host, () => {
-  console.log(`Port Scanner running at http://${host}:${port}`);
-});
+server.listen(port, host, () => console.log(`Port Scanner running at http://${host}:${port}`));
