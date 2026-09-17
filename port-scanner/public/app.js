@@ -17,6 +17,8 @@ const openCount = document.getElementById('openCount');
 const closedCount = document.getElementById('closedCount');
 const timeoutCount = document.getElementById('timeoutCount');
 const scannedCount = document.getElementById('scannedCount');
+const serviceCount = document.getElementById('serviceCount');
+const servicesList = document.getElementById('servicesList');
 const openOnlyButton = document.getElementById('openOnly');
 const clearResultsButton = document.getElementById('clearResults');
 
@@ -38,6 +40,28 @@ function resetStats() {
   closedCount.textContent = '0';
   timeoutCount.textContent = '0';
   scannedCount.textContent = '0';
+  serviceCount.textContent = '0';
+  servicesList.innerHTML = '<div class="service-empty">No open services yet.</div>';
+}
+
+function renderServices() {
+  const openRows = rows.filter(item => item.status === 'open');
+  const services = new Map();
+  for (const item of openRows) {
+    const key = `${item.address}:${item.port}`;
+    services.set(key, item);
+  }
+  const visible = [...services.values()].sort((a, b) => a.address.localeCompare(b.address, undefined, { numeric: true }) || a.port - b.port);
+  serviceCount.textContent = fmt(visible.length);
+  if (!visible.length) {
+    servicesList.innerHTML = '<div class="service-empty">No open services yet.</div>';
+    return;
+  }
+  servicesList.innerHTML = visible.map(item => `<div class="service-row">
+    <div class="service-dot"></div>
+    <div class="service-main"><strong>${escapeHtml(item.service)}</strong><span>${escapeHtml(item.address)}:${fmt(item.port)}</span></div>
+    <span class="service-open">OPEN</span>
+  </div>`).join('');
 }
 
 function renderRows() {
@@ -66,6 +90,7 @@ function addResult(result, completed, total) {
   progressText.textContent = `${fmt(completed)} / ${fmt(total)}`;
   progressPercent.textContent = `${percent}%`;
   renderRows();
+  renderServices();
 }
 
 async function consumeScan(payload) {
@@ -107,6 +132,7 @@ async function consumeScan(payload) {
         progressBar.style.width = '100%';
         progressText.textContent = `${fmt(s.total)} / ${fmt(s.total)}`;
         progressPercent.textContent = '100%';
+        renderServices();
       } else if (event.type === 'error') {
         throw new Error(event.error);
       }
