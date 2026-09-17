@@ -13,113 +13,30 @@
 </head>
 <body>
   <div class="shell">
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="Port Scanner home">
-        <span class="brand-mark"><span></span></span>
-        <span>PORT<span>SCAN</span></span>
-      </a>
-      <div class="scope">TCP / AUTHORIZED TARGETS</div>
-    </header>
-
+    <header class="topbar"><a class="brand" href="/" aria-label="Port Scanner home"><span class="brand-mark"><span></span></span><span>PORT<span>SCAN</span></span></a><div class="scope">TCP / AUTHORIZED TARGETS</div></header>
     <main>
-      <section class="hero">
-        <div>
-          <p class="eyebrow">Network observability</p>
-          <h1>See what is<br><em>listening.</em></h1>
-          <p class="lede">A fast, bounded TCP scanner with live progress, low-noise results and enough control for quick infrastructure checks.</p>
-        </div>
-        <div class="hero-note">
-          <div class="note-kicker">SCAN ENGINE</div>
-          <div class="note-value"><span class="indicator"></span>READY</div>
-          <p>Browser UI · Node.js backend · no shell commands</p>
-        </div>
-      </section>
-
+      <section class="hero"><div><p class="eyebrow">Network observability</p><h1>See what is<br><em>listening.</em></h1><p class="lede">A fast, bounded TCP scanner with live progress, low-noise results and enough control for quick infrastructure checks.</p></div><div class="hero-note"><div class="note-kicker">SCAN ENGINE</div><div class="note-value"><span class="indicator"></span>READY</div><p>Browser UI · Node.js backend · no shell commands</p></div></section>
       <section class="card control-card">
-        <div class="card-head">
-          <div>
-            <div class="section-title">New scan</div>
-            <div class="section-subtitle">Target only systems you own or are authorized to test.</div>
-          </div>
-          <span id="engineBadge" class="badge">IDLE</span>
-        </div>
+        <div class="card-head"><div><div class="section-title">New scan</div><div class="section-subtitle">Target only systems you own or are authorized to test.</div></div><span id="engineBadge" class="badge">IDLE</span></div>
         <form id="scanForm" class="scan-form">
-          <label class="field field-target">
-            <span>HOST / IP</span>
-            <input id="host" name="host" value="127.0.0.1" autocomplete="off" spellcheck="false" required>
-          </label>
-          <label class="field field-ports">
-            <span>PORTS</span>
-            <input id="ports" name="ports" value="22,80,443,25565,3000,8080,8787" autocomplete="off" spellcheck="false" required>
-          </label>
-          <label class="field field-timeout">
-            <span>TIMEOUT <small>ms</small></span>
-            <input id="timeout" name="timeout" type="number" value="1200" min="250" max="5000" step="50">
-          </label>
-          <label class="field field-concurrency">
-            <span>WORKERS</span>
-            <input id="concurrency" name="concurrency" type="number" value="64" min="1" max="128">
-          </label>
+          <label class="field field-target"><span>HOST / IP / RANGE</span><input id="host" name="host" value="127.0.0.1" placeholder="192.168.1.0/24 or 192.168.1.10-192.168.1.50" autocomplete="off" spellcheck="false" required></label>
+          <label class="field field-ports"><span>PORTS</span><input id="ports" name="ports" value="22,80,443,25565,3000,8080,8787" autocomplete="off" spellcheck="false" required></label>
+          <label class="field field-timeout"><span>TIMEOUT <small>ms</small></span><input id="timeout" name="timeout" type="number" value="1200" min="250" max="5000" step="50"></label>
+          <label class="field field-concurrency"><span>WORKERS</span><input id="concurrency" name="concurrency" type="number" value="64" min="1" max="128"></label>
           <button class="scan-button" id="scanButton" type="submit"><span>START SCAN</span><span class="arrow">↗</span></button>
         </form>
-        <div class="quick-row">
-          <span>Quick ranges</span>
-          <button type="button" data-preset="1-1024">1–1024</button>
-          <button type="button" data-preset="1-100">1–100</button>
-          <button type="button" data-preset="3000-9000">3000–9000</button>
-          <button type="button" data-preset="25565,27015,27017,3306,5432,6379,8080,8443">Common apps</button>
-        </div>
+        <div class="quick-row"><span>IP range</span><button type="button" data-host-preset="192.168.1.0/24">LAN /24</button><button type="button" data-host-preset="10.0.0.1-10.0.0.254">10.0.0.1–254</button><button type="button" data-host-preset="172.16.0.1-172.16.0.254">172.16.0.1–254</button><span class="quick-divider"></span><span>Ports</span><button type="button" data-preset="1-1024">1–1024</button><button type="button" data-preset="3000-9000">3000–9000</button><button type="button" data-preset="25565,27015,27017,3306,5432,6379,8080,8443">Common apps</button></div>
       </section>
-
-      <section class="stats-grid" aria-live="polite">
-        <article class="stat-card"><span>OPEN</span><strong id="openCount">0</strong></article>
-        <article class="stat-card"><span>CLOSED</span><strong id="closedCount">0</strong></article>
-        <article class="stat-card"><span>TIMEOUT</span><strong id="timeoutCount">0</strong></article>
-        <article class="stat-card"><span>SCANNED</span><strong id="scannedCount">0</strong></article>
-      </section>
-
+      <section class="stats-grid" aria-live="polite"><article class="stat-card"><span>OPEN</span><strong id="openCount">0</strong></article><article class="stat-card"><span>CLOSED</span><strong id="closedCount">0</strong></article><article class="stat-card"><span>TIMEOUT</span><strong id="timeoutCount">0</strong></article><article class="stat-card"><span>SCANNED</span><strong id="scannedCount">0</strong></article></section>
       <section class="workspace">
         <article class="card results-card">
-          <div class="card-head results-head">
-            <div>
-              <div class="section-title">Results</div>
-              <div class="section-subtitle" id="targetSummary">No scan running</div>
-            </div>
-            <div class="result-tools">
-              <button type="button" class="ghost-button" id="openOnly">OPEN ONLY</button>
-              <button type="button" class="ghost-button" id="clearResults">CLEAR</button>
-            </div>
-          </div>
-          <div class="progress-shell" id="progressShell" hidden>
-            <div class="progress-meta"><span id="progressText">0 / 0</span><span id="progressPercent">0%</span></div>
-            <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>PORT</th><th>SERVICE</th><th>STATE</th><th>LATENCY</th></tr></thead>
-              <tbody id="resultsBody"><tr class="empty-row"><td colspan="4">Run a scan to populate results.</td></tr></tbody>
-            </table>
-          </div>
+          <div class="card-head results-head"><div><div class="section-title">Results</div><div class="section-subtitle" id="targetSummary">No scan running</div></div><div class="result-tools"><button type="button" class="ghost-button" id="openOnly">OPEN ONLY</button><button type="button" class="ghost-button" id="clearResults">CLEAR</button></div></div>
+          <div class="progress-shell" id="progressShell" hidden><div class="progress-meta"><span id="progressText">0 / 0</span><span id="progressPercent">0%</span></div><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div></div>
+          <div class="table-wrap"><table><thead><tr><th>HOST</th><th>PORT</th><th>SERVICE</th><th>STATE</th><th>LATENCY</th></tr></thead><tbody id="resultsBody"><tr class="empty-row"><td colspan="5">Run a scan to populate results.</td></tr></tbody></table></div>
         </article>
-
-        <aside class="side-stack">
-          <article class="card info-card">
-            <div class="card-head"><div><div class="section-title">Target</div><div class="section-subtitle">Resolved endpoint</div></div></div>
-            <div class="target-block"><div id="resolvedHost">—</div><span id="resolvedFamily">—</span></div>
-          </article>
-          <article class="card info-card">
-            <div class="card-head"><div><div class="section-title">Scan notes</div><div class="section-subtitle">Current engine limits</div></div></div>
-            <div class="notes">
-              <div><span>Protocol</span><strong>TCP connect</strong></div>
-              <div><span>Port limit</span><strong>5,000</strong></div>
-              <div><span>Timeout</span><strong>250–5,000 ms</strong></div>
-              <div><span>Workers</span><strong>1–128</strong></div>
-            </div>
-          </article>
-        </aside>
+        <aside class="side-stack"><article class="card info-card"><div class="card-head"><div><div class="section-title">Targets</div><div class="section-subtitle">Resolved endpoints</div></div></div><div class="target-block"><div id="resolvedHost">—</div><span id="resolvedFamily">—</span></div></article><article class="card info-card"><div class="card-head"><div><div class="section-title">Scan notes</div><div class="section-subtitle">Current engine limits</div></div></div><div class="notes"><div><span>Protocol</span><strong>TCP connect</strong></div><div><span>Host limit</span><strong>256</strong></div><div><span>Probe limit</span><strong>5,000</strong></div><div><span>Timeout</span><strong>250–5,000 ms</strong></div><div><span>Workers</span><strong>1–128</strong></div></div></article></aside>
       </section>
     </main>
-
     <footer><span>PORTSCAN / SERVERSTATS</span><span>LOCAL-FIRST OBSERVABILITY</span></footer>
   </div>
   <script src="/app.js" defer></script>
