@@ -11,8 +11,8 @@ commands:
     usage: /kootlettools [about|reload [module]]
     aliases: [kt]
   compress:
-    description: Compress items (no argument = everything possible)
-    usage: /compress [<item>|hand|list|auto]
+    description: Compress items or export the current inventory
+    usage: /compress [<item>|hand|list|auto|exportinventory]
     permission: kootlettools.compress
   decompress:
     description: Turn compressed items back into normal items
@@ -30,6 +30,7 @@ commands:
 permissions:
   kootlettools.admin: {description: /kootlettools reload, default: op}
   kootlettools.compress: {default: true}
+  kootlettools.compress.export: {description: Export your current inventory to YAML, default: op}
   kootlettools.decompress: {default: true}
   kootlettools.compress.auto: {default: true}
   kootlettools.autopickup: {description: Use the /autopickup toggle, default: true}
