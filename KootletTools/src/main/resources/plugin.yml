@@ -1,0 +1,39 @@
+name: KootletTools
+version: 1.0.0
+main: ir.kootletland.tools.KootletTools
+api-version: '1.21'
+authors: [Mahbod]
+description: Compressor, CompressedGuard, AutoPickup and AutoSmelt in one plugin. Every module has its own config folder.
+
+commands:
+  kootlettools:
+    description: About the plugin / reload a module
+    usage: /kootlettools [about|reload [module]]
+    aliases: [kt]
+  compress:
+    description: Compress items (no argument = everything possible)
+    usage: /compress [<item>|hand|list|auto]
+    permission: kootlettools.compress
+  decompress:
+    description: Turn compressed items back into normal items
+    usage: /decompress [all]
+    aliases: [uncompress]
+    permission: kootlettools.decompress
+  autopickup:
+    description: Turn auto pickup on or off for yourself
+    usage: /autopickup
+    permission: kootlettools.autopickup
+  autosmelt:
+    description: Turn auto smelt on or off for yourself
+    usage: /autosmelt
+    permission: kootlettools.autosmelt
+permissions:
+  kootlettools.admin: {description: /kootlettools reload, default: op}
+  kootlettools.compress: {default: true}
+  kootlettools.decompress: {default: true}
+  kootlettools.compress.auto: {default: true}
+  kootlettools.autopickup: {description: Use the /autopickup toggle, default: true}
+  kootlettools.autopickup.use: {description: Needed when require-permission is true, default: false}
+  kootlettools.autosmelt: {description: Use the /autosmelt toggle, default: true}
+  kootlettools.autosmelt.use: {description: Needed when require-permission is true, default: false}
+  kootlettools.guard.bypass: {description: Not affected by the guard module, default: false}
