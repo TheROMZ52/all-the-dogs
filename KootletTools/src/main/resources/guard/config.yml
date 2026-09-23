@@ -1,0 +1,9 @@
+enabled: true
+protected-names: []
+block:
+  crafting: true
+  stonecutter: true
+  smelting: true
+  anvil: true
+messages:
+  denied: "<red>این آیتم رو نمیشه توی کرفت استفاده کرد."
