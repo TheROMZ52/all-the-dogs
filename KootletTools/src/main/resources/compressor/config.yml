@@ -1,0 +1,41 @@
+enabled: true
+items:
+  stone:
+    input: STONE
+    amount: 64
+    output: STONE
+    name: "<gradient:#D5D8DD:#4A4F57>Compressed Stone</gradient>"
+    lore:
+      - "<gray>معادل <white><amount></white> عدد <input>"
+    glow: true
+    permission: ""
+    legacy-names: ["Compressed Stone"]
+  iron:
+    input: IRON_INGOT
+    amount: 64
+    output: IRON_BLOCK
+    name: "<gradient:#E4E7EA:#6B727C>Compressed Iron</gradient>"
+    lore:
+      - "<gray>معادل <white><amount></white> عدد <input>"
+    glow: true
+    permission: ""
+    legacy-names: ["Compressed Iron"]
+settings:
+  sound-compress: "entity.experience_orb.pickup"
+  sound-decompress: "block.piston.extend"
+messages:
+  prefix: "<gray>[<gold>Compress</gold>]</gray> "
+  compressed: "<prefix><green><count></green> عدد <item> <green>ساخته شد.</green>"
+  nothing-to-compress: "<prefix><red>برای یک <item> باید <amount> عدد <input> معمولی داشته باشی."
+  nothing-at-all: "<prefix><red>چیزی برای فشرده کردن نداری."
+  decompressed: "<prefix><green><total></green> آیتم از <count> فشرده باز شد."
+  nothing-to-decompress: "<prefix><red>آیتم فشرده‌ای پیدا نشد."
+  no-space: "<prefix><red>جای کافی توی اینونتوری نداری."
+  no-permission: "<prefix><red>اجازه‌ی این کار رو نداری."
+  unknown-item: "<prefix><red>آیتمی با این اسم نیست. با <white>/compress list</white> لیست رو ببین."
+  auto-on: "<prefix><green>فشرده‌سازی خودکار روشن شد."
+  auto-off: "<prefix><yellow>فشرده‌سازی خودکار خاموش شد."
+  auto-compressed: "<green><count> × <item>"
+  list-header: "<prefix><yellow>آیتم‌های قابل فشرده شدن:"
+  list-line: "<gray> • <white><id></white>: <amount> × <input> → <item> <dark_gray>(الان <have> تا داری)"
+  players-only: "این دستور فقط برای بازیکن‌هاست."
