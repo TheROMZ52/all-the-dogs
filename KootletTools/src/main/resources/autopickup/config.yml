@@ -1,0 +1,12 @@
+enabled: true
+default-on: true
+require-permission: false
+blacklist: []
+worlds:
+  mode: all
+  list: []
+messages:
+  on: "<green>برداشت خودکار روشن شد."
+  off: "<yellow>برداشت خودکار خاموش شد."
+  no-permission: "<red>اجازه‌ی این کار رو نداری."
+  players-only: "این دستور فقط برای بازیکن‌هاست."
