@@ -1,0 +1,14 @@
+name: Decode ranks
+on:
+  push:
+    branches: [main]
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: gunzip -c fixed.json.gz > fixed.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: decoded-ranks
+          path: fixed.json
