@@ -1,0 +1,24 @@
+enabled: true
+default-on: true
+require-permission: false
+blocks:
+  IRON_ORE: ""
+  DEEPSLATE_IRON_ORE: ""
+  RAW_IRON_BLOCK: ""
+  GOLD_ORE: ""
+  DEEPSLATE_GOLD_ORE: ""
+  RAW_GOLD_BLOCK: ""
+  COPPER_ORE: ""
+  DEEPSLATE_COPPER_ORE: ""
+  RAW_COPPER_BLOCK: ""
+  ANCIENT_DEBRIS: ""
+  SAND: ""
+xp-per-item: 1
+worlds:
+  mode: all
+  list: []
+messages:
+  on: "<green>اسملت خودکار روشن شد."
+  off: "<yellow>اسملت خودکار خاموش شد."
+  no-permission: "<red>اجازه‌ی این کار رو نداری."
+  players-only: "این دستور فقط برای بازیکن‌هاست."
