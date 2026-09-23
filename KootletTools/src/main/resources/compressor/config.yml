@@ -39,3 +39,5 @@ messages:
   list-header: "<prefix><yellow>آیتم‌های قابل فشرده شدن:"
   list-line: "<gray> • <white><id></white>: <amount> × <input> → <item> <dark_gray>(الان <have> تا داری)"
   players-only: "این دستور فقط برای بازیکن‌هاست."
+  export-success: "<prefix><green>اینونتوری با <count> آیتم خروجی گرفته شد: <white><file></white>"
+  export-failed: "<prefix><red>ذخیره‌ی خروجی اینونتوری انجام نشد. لاگ سرور را بررسی کن."
