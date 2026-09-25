@@ -11,10 +11,10 @@
 <main class="shell">
 <section class="hero"><div><p class="eyebrow">ابزار IMAGEFRAME</p><h1>یک‌بار آپلود کن؛ کل تنظیمات نقشه را بساز.</h1><p class="hero-copy">یک پنل ساده برای ImageFrame؛ تصویر را در Supabase آپلود کن، کتابخانه را مدیریت کن، پیش‌نمایش بگیر و بدون حفظ کردن Syntax دستور بساز.</p></div><div class="status-card"><span id="statusDot"></span><span id="statusText">اتصال خودکار به Supabase</span></div></section>
 
-<div class="stats"><div><b id="imageCount">0</b><span>تصویر در مخزن</span></div><div><b id="selectedCount">0</b><span>انتخاب‌شده</span></div><div><b id="currentSize">—</b><span>تصویر فعلی</span></div></div>
+<nav class="quick-nav"><button data-go="upload-panel">۱. آپلود</button><button data-go="libraryPanel">۲. انتخاب تصویر</button><button data-go="builder">۳. ساخت دستور</button></nav>\n<div class="stats"><div><b id="imageCount">0</b><span>تصویر در مخزن</span></div><div><b id="selectedCount">0</b><span>انتخاب‌شده</span></div><div><b id="currentSize">—</b><span>تصویر فعلی</span></div></div>
 
 <div class="grid">
-<section class="panel"><div class="panel-head"><div><span class="step">01</span><h2>آپلود تصویر</h2></div><span class="hint">PNG · JPG · WEBP · GIF</span></div>
+<section class="panel" id="upload-panel"><div class="panel-head"><div><span class="step">01</span><h2>آپلود تصویر</h2></div><span class="hint">PNG · JPG · WEBP · GIF</span></div>
 <label class="dropzone" id="dropzone"><input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="upload-icon">↥</div><strong>تصویر را اینجا رها کن</strong><span>یا برای انتخاب کلیک کن</span><small>تصاویر در مخزن عمومی موجود <b>imageframe</b> آپلود می‌شوند.</small></label>
 <div id="fileInfo" class="file-info hidden"></div><div class="resize-row"><label>حداکثر عرض پیش‌نمایش/آپلود<input id="resizeInput" type="number" min="128" max="4096" value="2048"></label><button id="resetFile" class="secondary">پاک کردن</button></div>
 <button id="uploadBtn" class="primary wide" disabled>آپلود تصویر</button></section>
