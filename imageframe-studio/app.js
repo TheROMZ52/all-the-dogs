@@ -3,9 +3,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const $=id=>document.getElementById(id);
 const DEFAULT_SUPABASE_URL="https://fjzhkprnxznijwmjrlka.supabase.co";
 const DEFAULT_BUCKET="imageframe";
+const DEFAULT_SUPABASE_KEY="sb_publishable_OeU6Z8Yn_rPuxfKRsMApqw__kcMQIKA";
 const state={file:null,url:"",width:1,height:1,client:null,bucket:DEFAULT_BUCKET,items:[],selected:new Set()};
 const saved=JSON.parse(localStorage.getItem("imageframe-studio")||"null");
-if(saved){$("supabaseUrl").value=saved.url||DEFAULT_SUPABASE_URL;$("supabaseKey").value=saved.key||"";$("bucketName").value=saved.bucket||DEFAULT_BUCKET;state.bucket=saved.bucket||DEFAULT_BUCKET;if(saved.key)connect(saved.url||DEFAULT_SUPABASE_URL,saved.key)}
+if(saved){$("supabaseUrl").value=saved.url||DEFAULT_SUPABASE_URL;$("supabaseKey").value=saved.key||DEFAULT_SUPABASE_KEY;$("bucketName").value=saved.bucket||DEFAULT_BUCKET;state.bucket=saved.bucket||DEFAULT_BUCKET;connect(saved.url||DEFAULT_SUPABASE_URL,saved.key||DEFAULT_SUPABASE_KEY)}else{$("supabaseUrl").value=DEFAULT_SUPABASE_URL;$("supabaseKey").value=DEFAULT_SUPABASE_KEY;$("bucketName").value=DEFAULT_BUCKET;localStorage.setItem("imageframe-studio",JSON.stringify({url:DEFAULT_SUPABASE_URL,key:DEFAULT_SUPABASE_KEY,bucket:DEFAULT_BUCKET}));connect(DEFAULT_SUPABASE_URL,DEFAULT_SUPABASE_KEY)}
 
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove("show"),2200)}
 function setStatus(ok,m){$("statusDot").style.background=ok?"#5de1c2":"#ffb84d";$("statusText").textContent=m}
