@@ -14,7 +14,7 @@ function formatBytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFi
 function connect(url,key){try{state.client=createClient(url,key);setStatus(true,"Supabase متصل است");$("uploadBtn").disabled=!state.file;loadGallery()}catch{state.client=null;setStatus(false,"تنظیمات Supabase نامعتبر است")}}
 function copy(v){if(!v)return;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(v).then(()=>toast("کپی شد")).catch(()=>fallbackCopy(v))}else fallbackCopy(v)}\nfunction fallbackCopy(v){const ta=document.createElement("textarea");ta.value=v;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("کپی شد")}catch{toast("کپی ناموفق بود")}ta.remove()}
 
-$("settingsBtn").onclick=()=>$("settingsDialog").showModal();
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>document.getElementById(b.dataset.go)?.scrollIntoView({behavior:"smooth",block:"start"}));\n$("settingsBtn").onclick=()=>$("settingsDialog").showModal();
 $("saveSettingsBtn").onclick=()=>{const url=$("supabaseUrl").value.trim()||DEFAULT_SUPABASE_URL,key=$("supabaseKey").value.trim(),bucket=$("bucketName").value.trim()||DEFAULT_BUCKET;localStorage.setItem("imageframe-studio",JSON.stringify({url,key,bucket}));state.bucket=bucket;if(url&&key)connect(url,key);else setStatus(false,"Supabase تنظیم نشده است");toast("تنظیمات ذخیره شد")};
 $("refreshGallery").onclick=loadGallery;\n$("fileInput").setAttribute("aria-label","انتخاب تصویر");
 $("searchInput").oninput=renderGallery;
@@ -46,7 +46,7 @@ $("uploadBtn").onclick=async()=>{
  if(!state.client||!state.file)return;$("uploadBtn").disabled=true;$("uploadBtn").textContent="در حال آپلود…";
  try{const blob=await uploadBlob(),safe=state.file.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-"),path=Date.now()+"-"+crypto.randomUUID()+"-"+safe;
  const{error}=await state.client.storage.from(state.bucket).upload(path,blob,{contentType:state.file.type,cacheControl:"31536000",upsert:false});if(error)throw error;
- const{data}=state.client.storage.from(state.bucket).getPublicUrl(path);state.url=data.publicUrl;$("urlInput").value=state.url;$("copyUrlBtn").disabled=false;updateCommand();await loadGallery();toast("تصویر آپلود شد")}catch(e){toast(e?.message||"آپلود ناموفق بود")}finally{$("uploadBtn").disabled=false;$("uploadBtn").textContent="Upload to Supabase"}
+ const{data}=state.client.storage.from(state.bucket).getPublicUrl(path);state.url=data.publicUrl;$("urlInput").value=state.url;$("copyUrlBtn").disabled=false;updateCommand();await loadGallery();useImage(path);toast("تصویر آپلود شد؛ دستور آماده است")}catch(e){toast(e?.message||"آپلود ناموفق بود")}finally{$("uploadBtn").disabled=false;$("uploadBtn").textContent="Upload to Supabase"}
 };
 $("copyUrlBtn").onclick=()=>copy(state.url);$("copyCommandBtn").onclick=()=>copy($("commandOutput").textContent);
 
