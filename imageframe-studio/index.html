@@ -11,13 +11,13 @@
 <main class="shell">
 <section class="hero"><div><p class="eyebrow">ابزار IMAGEFRAME</p><h1>یک‌بار آپلود کن؛ کل تنظیمات نقشه را بساز.</h1><p class="hero-copy">یک پنل ساده برای ImageFrame؛ تصویر را در Supabase آپلود کن، کتابخانه را مدیریت کن، پیش‌نمایش بگیر و بدون حفظ کردن Syntax دستور بساز.</p></div><div class="status-card"><span id="statusDot"></span><span id="statusText">اتصال خودکار به Supabase</span></div></section>
 
-<div class="stats"><div><b id="imageCount">0</b><span>تصویر در مخزن</span></div><div><b id="انتخاب‌شدهCount">0</b><span>انتخاب‌شده</span></div><div><b id="currentSize">—</b><span>تصویر فعلی</span></div></div>
+<div class="stats"><div><b id="imageCount">0</b><span>تصویر در مخزن</span></div><div><b id="selectedCount">0</b><span>انتخاب‌شده</span></div><div><b id="currentSize">—</b><span>تصویر فعلی</span></div></div>
 
 <div class="grid">
 <section class="panel"><div class="panel-head"><div><span class="step">01</span><h2>آپلود تصویر</h2></div><span class="hint">PNG · JPG · WEBP · GIF</span></div>
 <label class="dropzone" id="dropzone"><input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div class="upload-icon">↥</div><strong>تصویر را اینجا رها کن</strong><span>یا برای انتخاب کلیک کن</span><small>تصاویر در مخزن عمومی موجود <b>imageframe</b> آپلود می‌شوند.</small></label>
-<div id="fileاطلاعات" class="file-info hidden"></div><div class="resize-row"><label>حداکثر عرض پیش‌نمایش/آپلود<input id="resizeInput" type="number" min="128" max="4096" value="2048"></label><button id="resetFile" class="secondary">پاک کردن</button></div>
-<button id="uploadBtn" class="primary wide" disabled>آپلود در Supabase</button></section>
+<div id="fileInfo" class="file-info hidden"></div><div class="resize-row"><label>حداکثر عرض پیش‌نمایش/آپلود<input id="resizeInput" type="number" min="128" max="4096" value="2048"></label><button id="resetFile" class="secondary">پاک کردن</button></div>
+<button id="uploadBtn" class="primary wide" disabled>آپلود تصویر</button></section>
 
 <section class="panel"><div class="panel-head"><div><span class="step">02</span><h2>پیش‌نمایش</h2></div><span id="dimensions" class="hint">—</span></div>
 <div id="preview" class="preview"><div class="empty">برای پیش‌نمایش، یک تصویر انتخاب کن.</div></div>
@@ -25,10 +25,10 @@
 </section>
 </div>
 
-<section class="panel"><div class="panel-head"><div><span class="step">03</span><h2>کتابخانه تصاویر</h2></div><div class="library-actions"><input id="searchInput" placeholder="جستجوی تصاویر…"><button id="deleteSelected" class="danger-btn" disabled>حذف انتخاب‌شده</button></div></div>
+<section class="panel" id="libraryPanel"><div class="panel-head"><div><span class="step">03</span><h2>کتابخانه تصاویر</h2></div><div class="library-actions"><input id="searchInput" placeholder="جستجوی تصاویر…"><button id="deleteSelected" class="danger-btn" disabled>حذف انتخاب‌شده</button></div></div>
 <div id="gallery" class="gallery"><div class="empty">کتابخانه ImageFrame به‌صورت خودکار بارگذاری می‌شود.</div></div></section>
 
-<section class="panel"><div class="panel-head"><div><span class="step">04</span><h2>سازنده دستور</h2></div><span class="hint">/imageframe</span></div>
+<section class="panel" id="builder"><div class="panel-head"><div><span class="step">04</span><h2>سازنده دستور</h2></div><span class="hint">مرحله آخر: کپی و اجرا در بازی</span></div>
 <div class="form-grid"><label>نام تصویر<input id="nameInput" value="my-image" maxlength="48"></label><label>حالت<select id="modeInput"><option value="create">ساخت Image Map</option><option value="selection">ساخت + انتخاب</option><option value="combined">ساخت + آیتم ترکیبی</option><option value="overlay">قرار دادن روی Map معمولی</option></select></label><label>عرض (Map)<input id="widthInput" type="number" min="1" max="64" value="1"></label><label>ارتفاع (Map)<input id="heightInput" type="number" min="1" max="64" value="1"></label></div>
 <div class="presets"><span>پیش‌تنظیم‌ها</span><button data-size="1x1">1×1</button><button data-size="2x2">2×2</button><button data-size="3x3">3×3</button><button data-size="4x4">4×4</button><button data-size="1x2">1×2</button><button data-size="2x1">2×1</button></div>
 <div class="command-box"><code id="commandOutput">/imageframe create my-image &lt;url&gt; 1 1</code><button id="copyCommandBtn" class="copy" disabled>کپی</button></div>
@@ -47,6 +47,6 @@ create policy "ImageFrame Studio deletes"
 on storage.objects for delete to anon
 using (bucket_id = 'imageframe');
 
--- Make the bucket public for direct ImageFrame URLs.</pre></div><div class="settings-actions"><button value="cancel" class="secondary">لغو</button><button id="saveتنظیماتBtn" value="default" class="primary">ذخیره تنظیمات</button></div></form></dialog>
+-- Make the bucket public for direct ImageFrame URLs.</pre></div><div class="settings-actions"><button value="cancel" class="secondary">لغو</button><button id="saveSettingsBtn" value="default" class="primary">ذخیره تنظیمات</button></div></form></dialog>
 <div id="toast" class="toast"></div><script type="module" src="./app.js"></script>
 </body></html>
