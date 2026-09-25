@@ -1,26 +1,26 @@
-# ImageFrame Studio
+# استودیو ImageFrame
 
-A browser toolkit for Minecraft ImageFrame.
+یک ابزار تحت وب برای مدیریت و ساخت دستورهای Minecraft ImageFrame.
 
-## Features
-- Supabase Storage upload for PNG/JPEG/WEBP/GIF
-- Client-side image downscaling option for large raster images
-- Image library with search, preview, select, use, copy URL and multi-delete
-- Image URL generation from a public Storage bucket
-- ImageFrame command builder with size presets
-- Quick command helpers and marker helper
-- Responsive dark UI
-- No Supabase secret/service-role key in the client
+## امکانات
+- آپلود PNG / JPG / WEBP / GIF در Supabase Storage
+- کوچک‌سازی سمت کاربر برای تصاویر بزرگ
+- کتابخانه تصاویر با جستجو، پیش‌نمایش، انتخاب، استفاده، کپی آدرس و حذف چندتایی
+- ساخت آدرس عمومی تصویر برای ImageFrame
+- سازنده دستور ImageFrame با پیش‌تنظیم‌های اندازه
+- ابزارهای سریع دستور و راهنمای Marker
+- رابط کاربری واکنش‌گرا و کاملاً فارسی
+- بدون استفاده از Service Role یا Secret Key در مرورگر
 
-## Setup
-1. Create a Supabase Storage bucket named `imageframe-images`.
-2. Make the bucket public if ImageFrame must fetch the URL directly.
-3. Add INSERT and DELETE Storage policies for the intended role/bucket. The Settings dialog includes starter SQL.
-4. Open `index.html` from a static host and enter the project URL plus the public publishable/anon key.
+## تنظیمات
+1. مخزن Storage با نام `imageframe` داشته باش.
+2. اگر ImageFrame باید مستقیماً URL تصویر را بخواند، مخزن را Public کن.
+3. برای نقش موردنظر، Policyهای INSERT و DELETE مربوط به Storage را فعال کن. نمونه Policy داخل پنجره تنظیمات سایت قرار دارد.
+4. سایت را روی یک هاست استاتیک مثل GitHub Pages باز کن؛ اتصال پیش‌فرض پروژه از قبل تنظیم شده است.
 
-The app uses the browser Supabase client from esm.sh. Settings are kept in localStorage.
+تنظیمات سفارشی داخل localStorage مرورگر ذخیره می‌شوند.
 
-Never put a Supabase service-role/secret key in this app.
+**نکته امنیتی:** فقط Publishable/Anon Key را در این سایت قرار بده. هرگز Service Role یا Secret Key را داخل کد سمت کاربر قرار نده.
 
-## ImageFrame note
-Command syntax can vary with the exact ImageFrame version and enabled features. The builder keeps the existing command patterns together so they can be adjusted easily if your server build uses a different syntax.
+## ImageFrame
+Syntax بعضی دستورها ممکن است با نسخه دقیق ImageFrame و قابلیت‌های فعال‌شده فرق کند. سازنده دستور، الگوهای فعلی پروژه را در یک محل جمع کرده تا در صورت نیاز به‌راحتی قابل تغییر باشند.
