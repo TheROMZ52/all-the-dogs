@@ -16,7 +16,7 @@ function copy(v){if(!v)return;if(navigator.clipboard?.writeText){navigator.clipb
 
 $("settingsBtn").onclick=()=>$("settingsDialog").showModal();
 $("saveSettingsBtn").onclick=()=>{const url=$("supabaseUrl").value.trim()||DEFAULT_SUPABASE_URL,key=$("supabaseKey").value.trim(),bucket=$("bucketName").value.trim()||DEFAULT_BUCKET;localStorage.setItem("imageframe-studio",JSON.stringify({url,key,bucket}));state.bucket=bucket;if(url&&key)connect(url,key);else setStatus(false,"Supabase تنظیم نشده است");toast("تنظیمات ذخیره شد")};
-$("refreshGallery").onclick=loadGallery;
+$("refreshGallery").onclick=loadGallery;\n$("fileInput").setAttribute("aria-label","انتخاب تصویر");
 $("searchInput").oninput=renderGallery;
 
 const dz=$("dropzone");
