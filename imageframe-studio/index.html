@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ImageFrame Studio — upload images and generate Minecraft ImageFrame commands.">
+  <title>ImageFrame Studio</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">IF</span><div><strong>ImageFrame Studio</strong><small>Minecraft image control panel</small></div></div>
+    <button id="settingsBtn" class="ghost">Settings</button>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">IMAGEFRAME TOOLKIT</p>
+        <h1>Turn an image into an ImageFrame command.</h1>
+        <p class="hero-copy">Upload it, get a public URL, choose how you want ImageFrame to place it, then copy the exact command.</p>
+      </div>
+      <div class="status-card"><span id="statusDot"></span><span id="statusText">Supabase not configured</span></div>
+    </section>
+
+    <div class="grid">
+      <section class="panel upload-panel">
+        <div class="panel-head"><div><span class="step">01</span><h2>Upload image</h2></div><span class="hint">PNG · JPG · WEBP · GIF</span></div>
+        <label class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+          <div class="upload-icon">↥</div>
+          <strong>Drop an image here</strong>
+          <span>or tap to browse</span>
+          <small>Keep uploads around 6 MB or less for the simplest browser upload flow.</small>
+        </label>
+        <div id="fileInfo" class="file-info hidden"></div>
+        <button id="uploadBtn" class="primary wide" disabled>Upload to Supabase</button>
+      </section>
+
+      <section class="panel preview-panel">
+        <div class="panel-head"><div><span class="step">02</span><h2>Preview</h2></div><span id="dimensions" class="hint">—</span></div>
+        <div id="preview" class="preview"><div class="empty">Your image preview appears here.</div></div>
+        <div class="url-row">
+          <input id="urlInput" placeholder="Image URL will appear here" spellcheck="false">
+          <button id="copyUrlBtn" class="secondary" disabled>Copy URL</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel builder">
+      <div class="panel-head"><div><span class="step">03</span><h2>Command builder</h2></div><span class="hint">/imageframe</span></div>
+
+      <div class="form-grid">
+        <label>Image name<input id="nameInput" value="my-image" maxlength="48"></label>
+        <label>Mode<select id="modeInput">
+          <option value="create">Create image map</option>
+          <option value="selection">Create + place on selected frames</option>
+          <option value="combined">Create + get combined item</option>
+          <option value="overlay">Overlay on vanilla map</option>
+        </select></label>
+        <label>Width (maps)<input id="widthInput" type="number" min="1" max="64" value="1"></label>
+        <label>Height (maps)<input id="heightInput" type="number" min="1" max="64" value="1"></label>
+      </div>
+
+      <div class="command-box">
+        <code id="commandOutput">/imageframe create my-image &lt;url&gt; 1 1</code>
+        <button id="copyCommandBtn" class="copy" disabled>Copy</button>
+      </div>
+
+      <div class="quick-actions">
+        <button data-command="refresh" class="tool">Refresh</button>
+        <button data-command="get" class="tool">Get</button>
+        <button data-command="get-selection" class="tool">Get → selection</button>
+        <button data-command="get-combined" class="tool">Get → combined</button>
+        <button data-command="delete" class="tool danger">Delete</button>
+        <button data-command="rename" class="tool">Rename</button>
+        <button data-command="info" class="tool">Info</button>
+        <button data-command="list" class="tool">List</button>
+      </div>
+
+      <div class="marker-tools">
+        <div><strong>Marker helper</strong><span>Add map markers without remembering the syntax.</span></div>
+        <div class="marker-grid">
+          <input id="markerName" placeholder="marker name">
+          <input id="markerDirection" type="number" min="0" max="15" value="0" placeholder="0–15">
+          <input id="markerType" placeholder="marker type">
+          <input id="markerCaption" placeholder="caption (optional)">
+          <button id="markerBtn" class="secondary">Build marker command</button>
+        </div>
+        <div id="markerOutput" class="mini-command hidden"></div>
+      </div>
+    </section>
+
+    <section class="panel guide">
+      <div class="panel-head"><div><span class="step">04</span><h2>Useful ImageFrame commands</h2></div></div>
+      <div class="command-list">
+        <button data-copy="/imageframe select">Select item frames</button>
+        <button data-copy="/imageframe info">Show held image-map info</button>
+        <button data-copy="/imageframe list">List your image maps</button>
+        <button data-copy="/imageframe reload">Reload ImageFrame</button>
+        <button data-copy="/imageframe update">Check for updates</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="settings">
+      <div class="panel-head"><div><span class="step">SET</span><h2>Supabase settings</h2></div><button value="cancel" class="close">×</button></div>
+      <p class="muted">Use your project URL and the public publishable/anon key. Never paste a service-role or secret key here.</p>
+      <label>Supabase URL<input id="supabaseUrl" placeholder="https://your-project.supabase.co"></label>
+      <label>Publishable / anon key<input id="supabaseKey" type="password" placeholder="sb_publishable_..."></label>
+      <label>Storage bucket<input id="bucketName" value="imageframe-images"></label>
+      <div class="sql">
+        <strong>Basic Storage setup</strong>
+        <pre>create policy "ImageFrame Studio uploads"
+on storage.objects for insert
+to anon
+with check (bucket_id = 'imageframe-images');
+
+-- Make the bucket public in Storage settings
+-- if ImageFrame needs direct public URLs.</pre>
+      </div>
+      <div class="settings-actions"><button value="cancel" class="secondary">Cancel</button><button id="saveSettingsBtn" value="default" class="primary">Save settings</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
