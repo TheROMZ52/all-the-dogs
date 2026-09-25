@@ -1,9 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const $=id=>document.getElementById(id);
-const state={file:null,url:"",width:1,height:1,client:null,bucket:"imageframe-images",items:[],selected:new Set()};
+const DEFAULT_SUPABASE_URL="https://fjzhkprnxznijwmjrlka.supabase.co";
+const DEFAULT_BUCKET="imageframe";
+const state={file:null,url:"",width:1,height:1,client:null,bucket:DEFAULT_BUCKET,items:[],selected:new Set()};
 const saved=JSON.parse(localStorage.getItem("imageframe-studio")||"null");
-if(saved){$("supabaseUrl").value=saved.url||"";$("supabaseKey").value=saved.key||"";$("bucketName").value=saved.bucket||"imageframe-images";state.bucket=saved.bucket||"imageframe-images";if(saved.url&&saved.key)connect(saved.url,saved.key)}
+if(saved){$("supabaseUrl").value=saved.url||DEFAULT_SUPABASE_URL;$("supabaseKey").value=saved.key||"";$("bucketName").value=saved.bucket||DEFAULT_BUCKET;state.bucket=saved.bucket||DEFAULT_BUCKET;if(saved.key)connect(saved.url||DEFAULT_SUPABASE_URL,saved.key)}
 
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove("show"),2200)}
 function setStatus(ok,m){$("statusDot").style.background=ok?"#5de1c2":"#ffb84d";$("statusText").textContent=m}
@@ -12,7 +14,7 @@ function connect(url,key){try{state.client=createClient(url,key);setStatus(true,
 function copy(v){if(!v)return;navigator.clipboard.writeText(v).then(()=>toast("Copied")).catch(()=>toast("Copy failed"))}
 
 $("settingsBtn").onclick=()=>$("settingsDialog").showModal();
-$("saveSettingsBtn").onclick=()=>{const url=$("supabaseUrl").value.trim(),key=$("supabaseKey").value.trim(),bucket=$("bucketName").value.trim()||"imageframe-images";localStorage.setItem("imageframe-studio",JSON.stringify({url,key,bucket}));state.bucket=bucket;if(url&&key)connect(url,key);else setStatus(false,"Supabase not configured");toast("Settings saved")};
+$("saveSettingsBtn").onclick=()=>{const url=$("supabaseUrl").value.trim()||DEFAULT_SUPABASE_URL,key=$("supabaseKey").value.trim(),bucket=$("bucketName").value.trim()||DEFAULT_BUCKET;localStorage.setItem("imageframe-studio",JSON.stringify({url,key,bucket}));state.bucket=bucket;if(url&&key)connect(url,key);else setStatus(false,"Supabase not configured");toast("Settings saved")};
 $("refreshGallery").onclick=loadGallery;
 $("searchInput").oninput=renderGallery;
 
@@ -41,7 +43,7 @@ async function uploadBlob(){
 }
 $("uploadBtn").onclick=async()=>{
  if(!state.client||!state.file)return;$("uploadBtn").disabled=true;$("uploadBtn").textContent="Uploading…";
- try{const blob=await uploadBlob(),safe=state.file.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-"),path="imageframe/"+Date.now()+"-"+crypto.randomUUID()+"-"+safe;
+ try{const blob=await uploadBlob(),safe=state.file.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-"),path=Date.now()+"-"+crypto.randomUUID()+"-"+safe;
  const{error}=await state.client.storage.from(state.bucket).upload(path,blob,{contentType:state.file.type,cacheControl:"31536000",upsert:false});if(error)throw error;
  const{data}=state.client.storage.from(state.bucket).getPublicUrl(path);state.url=data.publicUrl;$("urlInput").value=state.url;$("copyUrlBtn").disabled=false;updateCommand();await loadGallery();toast("Image uploaded")}catch(e){toast(e?.message||"Upload failed")}finally{$("uploadBtn").disabled=false;$("uploadBtn").textContent="Upload to Supabase"}
 };
@@ -49,20 +51,20 @@ $("copyUrlBtn").onclick=()=>copy(state.url);$("copyCommandBtn").onclick=()=>copy
 
 async function loadGallery(){
  if(!state.client)return;
- const{data,error}=await state.client.storage.from(state.bucket).list("imageframe",{limit:100,sortBy:{column:"created_at",order:"desc"}});
+ const{data,error}=await state.client.storage.from(state.bucket).list("",{limit:100,sortBy:{column:"created_at",order:"desc"}});
  if(error){$("gallery").innerHTML='<div class="empty">Could not read the bucket. Check the Storage policy.</div>';return}
- state.items=(data||[]).filter(x=>x.name&&!x.name.endsWith("/"));state.selected.clear();$("imageCount").textContent=state.items.length;renderGallery()
+ state.items=(data||[]).filter(x=>x.name&&!x.name.endsWith("/"));state.selected.clear();$("imageCount").textContent=state.items.length;$("selectedCount").textContent=0;renderGallery()
 }
 function renderGallery(){
- const q=$("searchInput").value.trim().toLowerCase(),items=state.items.filter(x=>x.name.toLowerCase().includes(q));$("deleteSelected").disabled=state.selected.size===0;
+ const q=$("searchInput").value.trim().toLowerCase(),items=state.items.filter(x=>x.name.toLowerCase().includes(q));$("deleteSelected").disabled=state.selected.size===0;$("selectedCount").textContent=state.selected.size;
  if(!items.length){$("gallery").innerHTML='<div class="empty">No images found.</div>';return}
- $("gallery").innerHTML=items.map((x,i)=>{const path="imageframe/"+x.name,{data}=state.client.storage.from(state.bucket).getPublicUrl(path),checked=state.selected.has(x.name);return '<article class="card '+(checked?"selected":"")+'" data-name="'+encodeURIComponent(x.name)+'"><img loading="lazy" src="'+data.publicUrl+'" alt=""><div class="card-body"><label class="check"><input type="checkbox" '+(checked?"checked":"")+'> <span>Select</span></label><strong title="'+x.name+'">'+x.name+'</strong><small>'+(x.metadata?.size?formatBytes(x.metadata.size):"image")+'</small><div><button class="secondary use">Use</button><button class="secondary copy-img">URL</button></div></div></article>'}).join("");
- document.querySelectorAll(".card").forEach(card=>{const name=decodeURIComponent(card.dataset.name);card.querySelector("input").onchange=e=>{e.target.checked?state.selected.add(name):state.selected.delete(name);renderGallery()};card.querySelector(".use").onclick=()=>useImage(name);card.querySelector(".copy-img").onclick=()=>{const{data}=state.client.storage.from(state.bucket).getPublicUrl("imageframe/"+name);copy(data.publicUrl)};card.querySelector("img").onclick=()=>useImage(name)})
+ $("gallery").innerHTML=items.map((x,i)=>{const path=x.name,{data}=state.client.storage.from(state.bucket).getPublicUrl(path),checked=state.selected.has(x.name);return '<article class="card '+(checked?"selected":"")+'" data-name="'+encodeURIComponent(x.name)+'"><img loading="lazy" src="'+data.publicUrl+'" alt=""><div class="card-body"><label class="check"><input type="checkbox" '+(checked?"checked":"")+'> <span>Select</span></label><strong title="'+x.name+'">'+x.name+'</strong><small>'+(x.metadata?.size?formatBytes(x.metadata.size):"image")+'</small><div><button class="secondary use">Use</button><button class="secondary copy-img">URL</button></div></div></article>'}).join("");
+ document.querySelectorAll(".card").forEach(card=>{const name=decodeURIComponent(card.dataset.name);card.querySelector("input").onchange=e=>{e.target.checked?state.selected.add(name):state.selected.delete(name);$("selectedCount").textContent=state.selected.size;renderGallery()};card.querySelector(".use").onclick=()=>useImage(name);card.querySelector(".copy-img").onclick=()=>{const{data}=state.client.storage.from(state.bucket).getPublicUrl(name);copy(data.publicUrl)};card.querySelector("img").onclick=()=>useImage(name)})
 }
 function useImage(name){const{data}=state.client.storage.from(state.bucket).getPublicUrl("imageframe/"+name);state.url=data.publicUrl;$("urlInput").value=state.url;$("copyUrlBtn").disabled=false;$("nameInput").value=name.replace(/\.[^.]+$/,"").replace(/[^a-zA-Z0-9_-]/g,"-").slice(0,48);updateCommand();window.scrollTo({top:$("nameInput").closest(".panel").offsetTop-80,behavior:"smooth"});toast("Image selected")}
 $("deleteSelected").onclick=async()=>{
  if(!state.client||!state.selected.size)return;if(!confirm("Delete "+state.selected.size+" image(s) from Supabase Storage?"))return;
- const paths=[...state.selected].map(n=>"imageframe/"+n);const{error}=await state.client.storage.from(state.bucket).remove(paths);if(error)toast(error.message);else{toast("Deleted");await loadGallery()}
+ const paths=[...state.selected];const{error}=await state.client.storage.from(state.bucket).remove(paths);if(error)toast(error.message);else{toast("Deleted");await loadGallery()}
 };
 
 function updateCommand(){
