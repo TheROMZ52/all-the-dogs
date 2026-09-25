@@ -24,7 +24,7 @@ dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag")})
 dz.addEventListener("dragleave",()=>dz.classList.remove("drag"));
 dz.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("drag");const f=e.dataTransfer.files[0];if(f)selectFile(f)});
 $("fileInput").onchange=e=>{const f=e.target.files[0];if(f)selectFile(f)};
-$("resetFile").onclick=()=>{state.file=null;$("fileInput").value="";$("fileInfo").classList.add("hidden");$("preview").innerHTML='<div class="empty">Pick an image to preview it.</div>';$("dimensions").textContent="—";$("currentSize").textContent="—";$("uploadBtn").disabled=true};
+$("resetFile").onclick=()=>{state.file=null;state.url="";$("urlInput").value="";$("copyUrlBtn").disabled=true;$("fileInput").value="";$("fileInfo").classList.add("hidden");$("preview").innerHTML='<div class="empty">Pick an image to preview it.</div>';$("dimensions").textContent="—";$("currentSize").textContent="—";$("uploadBtn").disabled=true};
 
 function selectFile(file){
  if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){toast("فرمت باید PNG، JPG، WEBP یا GIF باشد");return}
@@ -54,7 +54,7 @@ async function loadGallery(){
  if(!state.client)return;
  const{data,error}=await state.client.storage.from(state.bucket).list("",{limit:100,sortBy:{column:"created_at",order:"desc"}});
  if(error){$("gallery").innerHTML='<div class="empty">امکان خواندن مخزن وجود ندارد؛ Policy دسترسی Storage را بررسی کن.</div>';return}
- state.items=(data||[]).filter(x=>x.name&&!x.name.endsWith("/"));state.selected.clear();$("imageCount").textContent=state.items.length;$("selectedCount").textContent=0;renderGallery()
+ state.items=(data||[]).filter(x=>x.name&&!x.name.endsWith("/"));state.selected=new Set([...state.selected].filter(name=>state.items.some(x=>x.name===name)));$("imageCount").textContent=state.items.length;$("selectedCount").textContent=0;renderGallery()
 }
 function renderGallery(){
  const q=$("searchInput").value.trim().toLowerCase(),items=state.items.filter(x=>x.name.toLowerCase().includes(q));$("deleteSelected").disabled=state.selected.size===0;$("selectedCount").textContent=state.selected.size;
