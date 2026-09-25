@@ -5,14 +5,14 @@ const DEFAULT_SUPABASE_URL="https://fjzhkprnxznijwmjrlka.supabase.co";
 const DEFAULT_BUCKET="imageframe";
 const DEFAULT_SUPABASE_KEY="sb_publishable_OeU6Z8Yn_rPuxfKRsMApqw__kcMQIKA";
 const state={file:null,url:"",width:1,height:1,client:null,bucket:DEFAULT_BUCKET,items:[],selected:new Set()};
-const saved=JSON.parse(localStorage.getItem("imageframe-studio")||"null");
+let saved=null;try{saved=JSON.parse(localStorage.getItem("imageframe-studio")||"null")}catch{localStorage.removeItem("imageframe-studio")}
 if(saved){$("supabaseUrl").value=saved.url||DEFAULT_SUPABASE_URL;$("supabaseKey").value=saved.key||DEFAULT_SUPABASE_KEY;$("bucketName").value=saved.bucket||DEFAULT_BUCKET;state.bucket=saved.bucket||DEFAULT_BUCKET;connect(saved.url||DEFAULT_SUPABASE_URL,saved.key||DEFAULT_SUPABASE_KEY)}else{$("supabaseUrl").value=DEFAULT_SUPABASE_URL;$("supabaseKey").value=DEFAULT_SUPABASE_KEY;$("bucketName").value=DEFAULT_BUCKET;localStorage.setItem("imageframe-studio",JSON.stringify({url:DEFAULT_SUPABASE_URL,key:DEFAULT_SUPABASE_KEY,bucket:DEFAULT_BUCKET}));connect(DEFAULT_SUPABASE_URL,DEFAULT_SUPABASE_KEY)}
 
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove("show"),2200)}
 function setStatus(ok,m){$("statusDot").style.background=ok?"#5de1c2":"#ffb84d";$("statusText").textContent=m}
 function formatBytes(n){if(n<1024)return n+" B";if(n<1048576)return(n/1024).toFixed(1)+" KB";if(n<1073741824)return(n/1048576).toFixed(2)+" MB";return(n/1073741824).toFixed(2)+" GB"}
 function connect(url,key){try{state.client=createClient(url,key);setStatus(true,"Supabase connected");$("uploadBtn").disabled=!state.file;loadGallery()}catch{state.client=null;setStatus(false,"Invalid Supabase settings")}}
-function copy(v){if(!v)return;navigator.clipboard.writeText(v).then(()=>toast("Copied")).catch(()=>toast("Copy failed"))}
+function copy(v){if(!v)return;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(v).then(()=>toast("کپی شد")).catch(()=>fallbackCopy(v))}else fallbackCopy(v)}\nfunction fallbackCopy(v){const ta=document.createElement("textarea");ta.value=v;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("کپی شد")}catch{toast("کپی ناموفق بود")}ta.remove()}
 
 $("settingsBtn").onclick=()=>$("settingsDialog").showModal();
 $("saveSettingsBtn").onclick=()=>{const url=$("supabaseUrl").value.trim()||DEFAULT_SUPABASE_URL,key=$("supabaseKey").value.trim(),bucket=$("bucketName").value.trim()||DEFAULT_BUCKET;localStorage.setItem("imageframe-studio",JSON.stringify({url,key,bucket}));state.bucket=bucket;if(url&&key)connect(url,key);else setStatus(false,"Supabase not configured");toast("Settings saved")};
