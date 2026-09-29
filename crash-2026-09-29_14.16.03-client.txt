@@ -1,0 +1,275 @@
+---- Minecraft Crash Report ----
+// Daisy, daisy...
+
+Time: 2026-09-29 14:16:03
+Description: Rendering screen
+
+java.lang.IllegalStateException: Can only blur once per frame
+	at knot//net.minecraft.class_11246.method_71299(class_11246.java:46)
+	at knot//net.minecraft.class_332.method_71278(class_332.java:111)
+	at knot//net.minecraft.class_437.method_57734(class_437.java:391)
+	at knot//net.minecraft.class_437.method_25420(class_437.java:384)
+	at knot//ir.aydream.client.AydreamScreen.method_25394(AydreamScreen.java:678)
+	at knot//net.minecraft.class_437.method_47413(class_437.java:113)
+	at knot//net.minecraft.class_757.mixinextras$bridge$method_47413$80(class_757.java)
+	at knot//net.minecraft.class_757.wrapOperation$bon000$fabric-screen-api-v1$onRenderScreen(class_757.java:1923)
+	at knot//net.minecraft.class_757.method_3192(class_757.java:549)
+	at knot//net.minecraft.class_310.method_1523(class_310.java:1361)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:947)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:514)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at knot//net.minecraft.class_11246.method_71299(class_11246.java:46)
+	at knot//net.minecraft.class_332.method_71278(class_332.java:111)
+	at knot//net.minecraft.class_437.method_57734(class_437.java:391)
+	at knot//net.minecraft.class_437.method_25420(class_437.java:384)
+	at knot//ir.aydream.client.AydreamScreen.method_25394(AydreamScreen.java:678)
+	at knot//net.minecraft.class_437.method_47413(class_437.java:113)
+	at knot//net.minecraft.class_757.mixinextras$bridge$method_47413$80(class_757.java)
+	at knot//net.minecraft.class_757.wrapOperation$bon000$fabric-screen-api-v1$onRenderScreen(class_757.java:1923)
+
+-- Screen render details --
+Details:
+	Screen name: ir.aydream.client.AydreamScreen
+	Mouse location: Scaled: (240.000000, 135.000000). Absolute: (960.000000, 540.000000)
+	Screen size: ~~ERROR~~ IllegalFormatConversionException: f != java.lang.Integer
+Stacktrace:
+	at knot//net.minecraft.class_757.method_3192(class_757.java:549)
+	at knot//net.minecraft.class_310.method_1523(class_310.java:1361)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:947)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:514)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+
+-- Uptime --
+Details:
+	JVM uptime: 246.602s
+	Wall uptime: 191.235s
+	High-res time: 176.494s
+	Client ticks: 2327 ticks / 116.350s
+Stacktrace:
+	at knot//net.minecraft.class_310.method_1587(class_310.java:2411)
+	at knot//net.minecraft.class_310.method_54580(class_310.java:1016)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:968)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:514)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+
+-- Affected level --
+Details:
+	All players: 2 total; class_746{name=TheROMZ52, id=135, pos=(4.506505489203437, 60.5, 0.6238804508779384), mode=SURVIVAL, permission=4}, class_745{name=Aydreamhere, id=124, pos=(4.995361328125, 61.0, 3.066162109375), mode=SURVIVAL, permission=0}
+	Chunk stats: 729, 473
+	Level dimension: minecraft:overworld
+	Level spawn location: World: (-846,57,-1486), Section: (at 2,9,2 in -53,3,-93; chunk contains blocks -848,-64,-1488 to -833,319,-1473), Region: (-2,-3; contains chunks -64,-96 to -33,-65, blocks -1024,-64,-1536 to -513,319,-1025)
+	Level time: 732133 game time, 384317 day time
+	Server brand: Paper
+	Server type: Non-integrated multiplayer server
+	Tracked entity count: 10
+
+-- Last reload --
+Details:
+	Reload number: 1
+	Reload reason: initial
+	Finished: Yes
+	Packs: vanilla, fabric, autotools, balm, bridgingmod, cardinal-components, cardinal-components-base, cardinal-components-block, cardinal-components-chunk, cardinal-components-entity, cardinal-components-item, cardinal-components-level, cardinal-components-scoreboard, cardinal-components-world, chatanimation, cicada, cloth-config, craftingtweaks, custom-crosshair-mod, do_a_barrel_roll, dynamiclights, entity_model_features, entity_sound_features, entity_texture_features, exordium, fabric-api, fabric-api-base, fabric-api-lookup-api-v1, fabric-biome-api-v1, fabric-block-api-v1, fabric-block-view-api-v2, fabric-command-api-v2, fabric-content-registries-v0, fabric-convention-tags-v1, fabric-convention-tags-v2, fabric-crash-report-info-v1, fabric-data-attachment-api-v1, fabric-data-generation-api-v1, fabric-dimensions-v1, fabric-entity-events-v1, fabric-events-interaction-v0, fabric-game-rule-api-v1, fabric-item-api-v1, fabric-item-group-api-v1, fabric-key-binding-api-v1, fabric-lifecycle-events-v1, fabric-loot-api-v2, fabric-loot-api-v3, fabric-message-api-v1, fabric-model-loading-api-v1, fabric-networking-api-v1, fabric-object-builder-api-v1, fabric-particles-v1, fabric-recipe-api-v1, fabric-registry-sync-v0, fabric-renderer-api-v1, fabric-renderer-indigo, fabric-rendering-fluids-v1, fabric-rendering-v1, fabric-resource-conditions-api-v1, fabric-resource-loader-v0, fabric-screen-api-v1, fabric-screen-handler-api-v1, fabric-serialization-api-v1, fabric-sound-api-v1, fabric-tag-api-v1, fabric-transfer-api-v1, fabric-transitive-access-wideners-v1, fabricloader, forgeconfigapiport, fpsreducer, freecam, fullscreenfix, gammautils, immediatelyfast, inventoryhud, jade, litematica, malilib, minemath, modmenu, nemos_inventory_sorting, owo, pingcounter, pingfix, placeholder-api, pvpoptimizer, roughlyenoughitems, servercountryflags, serverpingerfixer, showmeyourskin, shulkerboxtooltip, skinlayers3d, sodium, trender, voicechat, wi_zoom, xaerominimap, xaeroworldmap, yet_another_config_lib_v3, file/Eating Animation.zip, file/Faithful 64x - Release 10.zip, file/Fancy_Beds-v4.0.zip, file/Icons v.1.12.zip, file/Itsme64's smaller shield and totem.zip, file/VISIBLE ORES PLUS v1.6.0.zip, file/dynamiclights-v1.9-mc1.17-1.21.9-datapack.zip, nemos_inventory_sorting:dark_mode, black_icons, file/Better+Lanterns+v1.2(mc-1.21).zip, file/Alittle_Axolotl.zip
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.8
+	Minecraft Version ID: 1.21.8
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 21.0.7, Microsoft
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode), Microsoft
+	Memory: 294166176 bytes (280 MiB) / 905969664 bytes (864 MiB) up to 5670699008 bytes (5408 MiB)
+	CPUs: 4
+	Processor Vendor: GenuineIntel
+	Processor Name: AMD Ryzen 7 9850X3D 8-Core Processor
+	Identifier: Intel64 Family 6 Model 78 Stepping 3
+	Microarchitecture: Skylake (Client)
+	Frequency (GHz): 2.50
+	Number of physical packages: 1
+	Number of physical CPUs: 2
+	Number of logical CPUs: 4
+	Graphics card #0 name: Intel(R) HD Graphics 520
+	Graphics card #0 vendor: Intel Corporation
+	Graphics card #0 VRAM (MiB): 1024.00
+	Graphics card #0 deviceId: VideoController1
+	Graphics card #0 versionInfo: 27.20.100.9416
+	Memory slot #0 capacity (MiB): 4096.00
+	Memory slot #0 clockSpeed (GHz): 2.13
+	Memory slot #0 type: DDR4
+	Memory slot #1 capacity (MiB): 4096.00
+	Memory slot #1 clockSpeed (GHz): 2.13
+	Memory slot #1 type: DDR4
+	Virtual memory max (MiB): 13653.74
+	Virtual memory used (MiB): 8891.37
+	Swap memory total (MiB): 5565.14
+	Swap memory used (MiB): 0.00
+	Space in storage for jna.tmpdir (MiB): available: 1222.86, total: 101777.05
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): available: 1222.86, total: 101777.05
+	Space in storage for io.netty.native.workdir (MiB): available: 1222.86, total: 101777.05
+	Space in storage for java.io.tmpdir (MiB): available: 31114.75, total: 141796.00
+	Space in storage for workdir (MiB): available: 1222.86, total: 101777.05
+	JVM Flags: 9 total; -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Xss1M -Xmx5392M
+	Fabric Mods: 
+		architectury: Architectury 17.0.8
+		autotools: AutoTools 3.4.2
+			fabric-key-binding-api-v1: Fabric Key Binding API (v1) 1.0.65+946bf4c396
+		aydream-client: Aydream Client 1.0.0
+		balm: Balm 21.8.10
+			kuma_api: KumaAPI 21.8.5
+		bridgingmod: Bridging Mod 2.6.3+1.21.6
+		cardinal-components: Cardinal Components API 7.0.0-beta.1
+			cardinal-components-base: Cardinal Components API (base) 7.0.0-beta.1
+			cardinal-components-block: Cardinal Components API (blocks) 7.0.0-beta.1
+			cardinal-components-chunk: Cardinal Components API (chunks) 7.0.0-beta.1
+			cardinal-components-entity: Cardinal Components API (entities) 7.0.0-beta.1
+			cardinal-components-item: Cardinal Components API (items) 7.0.0-beta.1
+			cardinal-components-level: Cardinal Components API (world saves) 7.0.0-beta.1
+			cardinal-components-scoreboard: Cardinal Components API (scoreboard) 7.0.0-beta.1
+			cardinal-components-world: Cardinal Components API (worlds) 7.0.0-beta.1
+		chatanimation: ChatAnimation 1.0.7
+		cicada: CICADA 0.14.3+1.21.6-1.21.8
+			org_yaml_snakeyaml: snakeyaml 2.2
+		cloth-config: Cloth Config v19 19.0.147
+			cloth-basic-math: cloth-basic-math 0.6.1
+		collective: Collective 8.4
+		craftingtweaks: Crafting Tweaks 21.8.2
+		custom-crosshair-mod: Custom Crosshair Mod ${version}
+		customskinloader-bootstrap: CustomSkinLoader Bootstrap 15.0.1
+		do_a_barrel_roll: Do a Barrel Roll 3.8.3
+			fabric-permissions-api-v0: fabric-permissions-api 0.4.0
+			mixinsquared: MixinSquared 0.1.2-beta.4
+		dynamiclights: Dynamic Lights 1.8.9+mod
+		entity_model_features: Entity Model Features 3.2.4
+		entity_sound_features: Entity Sound Features 0.8.1
+		entity_texture_features: Entity Texture Features 7.1
+		exordium: Exordium 2.1.1
+		fabric-api: Fabric API 0.132.0+1.21.8
+			fabric-api-base: Fabric API Base 0.5.0+cd8c0daa2c
+			fabric-api-lookup-api-v1: Fabric API Lookup API (v1) 1.6.101+946bf4c32c
+			fabric-biome-api-v1: Fabric Biome API (v1) 16.0.11+946bf4c32c
+			fabric-block-api-v1: Fabric Block API (v1) 1.1.3+946bf4c32c
+			fabric-block-view-api-v2: Fabric BlockView API (v2) 1.0.31+946bf4c32c
+			fabric-command-api-v2: Fabric Command API (v2) 2.3.1+52fff9ec2c
+			fabric-content-registries-v0: Fabric Content Registries (v0) 10.0.19+946bf4c32c
+			fabric-convention-tags-v1: Fabric Convention Tags 2.1.41+7f945d5b2c
+			fabric-convention-tags-v2: Fabric Convention Tags (v2) 2.15.6+eb5df52f2c
+			fabric-crash-report-info-v1: Fabric Crash Report Info (v1) 0.3.15+946bf4c32c
+			fabric-data-attachment-api-v1: Fabric Data Attachment API (v1) 1.8.12+38b5f74e2c
+			fabric-data-generation-api-v1: Fabric Data Generation API (v1) 23.2.6+0b1ef9762c
+			fabric-dimensions-v1: Fabric Dimensions API (v1) 4.0.19+946bf4c32c
+			fabric-entity-events-v1: Fabric Entity Events (v1) 2.1.2+c9e472732c
+			fabric-events-interaction-v0: Fabric Events Interaction (v0) 4.0.24+946bf4c32c
+			fabric-game-rule-api-v1: Fabric Game Rule API (v1) 1.0.73+c64c9c5b2c
+			fabric-item-api-v1: Fabric Item API (v1) 11.5.0+02ce13f42c
+			fabric-item-group-api-v1: Fabric Item Group API (v1) 4.2.14+c5f9bbc12c
+			fabric-lifecycle-events-v1: Fabric Lifecycle Events (v1) 2.6.4+db4dfd852c
+			fabric-loot-api-v2: Fabric Loot API (v2) 3.0.56+3f89f5a52c
+			fabric-loot-api-v3: Fabric Loot API (v3) 2.0.3+946bf4c32c
+			fabric-message-api-v1: Fabric Message API (v1) 6.1.2+946bf4c32c
+			fabric-model-loading-api-v1: Fabric Model Loading API (v1) 5.2.6+946bf4c32c
+			fabric-networking-api-v1: Fabric Networking API (v1) 5.0.2+946bf4c32c
+			fabric-object-builder-api-v1: Fabric Object Builder API (v1) 21.1.8+946bf4c32c
+			fabric-particles-v1: Fabric Particles (v1) 4.1.8+946bf4c32c
+			fabric-recipe-api-v1: Fabric Recipe API (v1) 8.1.15+946bf4c32c
+			fabric-registry-sync-v0: Fabric Registry Sync (v0) 6.1.28+946bf4c32c
+			fabric-renderer-api-v1: Fabric Renderer API (v1) 7.0.3+208eed172c
+			fabric-renderer-indigo: Fabric Renderer - Indigo 4.0.3+946bf4c32c
+			fabric-rendering-fluids-v1: Fabric Rendering Fluids (v1) 3.1.31+fa6cb72b2c
+			fabric-rendering-v1: Fabric Rendering (v1) 12.5.0+fbe231d52c
+			fabric-resource-conditions-api-v1: Fabric Resource Conditions API (v1) 5.0.25+98e6d6db2c
+			fabric-resource-loader-v0: Fabric Resource Loader (v0) 3.1.12+020423442c
+			fabric-screen-api-v1: Fabric Screen API (v1) 2.1.1+277ecf7d2c
+			fabric-screen-handler-api-v1: Fabric Screen Handler API (v1) 1.3.137+946bf4c32c
+			fabric-serialization-api-v1: Fabric Serialization API (v1) 1.0.0+fc0e5aba2c
+			fabric-sound-api-v1: Fabric Sound API (v1) 1.0.42+946bf4c32c
+			fabric-tag-api-v1: Fabric Tag API (v1) 1.2.2+946bf4c32c
+			fabric-transfer-api-v1: Fabric Transfer API (v1) 6.0.6+946bf4c32c
+			fabric-transitive-access-wideners-v1: Fabric Transitive Access Wideners (v1) 6.4.1+ac3e15d12c
+		fabricloader: Fabric Loader 0.19.3
+			mixinextras: MixinExtras 0.5.4
+		forgeconfigapiport: Forge Config API Port 21.8.0
+			com_electronwill_night-config_core: core 3.8.2
+			com_electronwill_night-config_toml: toml 3.8.2
+		fpsreducer: FPS Reducer 1.21.7-2.13.1
+		freecam: Freecam 1.3.4+mc1.21.6
+		fullscreenfix: Borderless Fullscreen 2.2.1
+		gammautils: Gamma Utils 2.3.6
+		immediatelyfast: ImmediatelyFast 1.12.2+1.21.8
+			net_lenni0451_reflect: Reflect 1.3.4
+		inventoryhud: Inventory HUD + 3.4.27
+		inventorytotem: Inventory Totem 3.4
+		jade: Jade 19.3.2+fabric
+		java: OpenJDK 64-Bit Server VM 21
+		litematica: Litematica 0.23.4
+		malilib: MaLiLib 0.25.5
+		minecraft: Minecraft 1.21.8
+		minemath: MineMath 3.0.0
+		modmenu: Mod Menu 15.0.0
+		mousetweaks: Mouse Tweaks 2.28
+		nemos_inventory_sorting: Nemo's Inventory Sorting 1.21.8-1.14.4
+		owo: oωo 0.12.23+1.21.8
+			blue_endless_jankson: jankson 1.2.2
+			io_wispforest_endec: endec 0.1.9
+			io_wispforest_endec_gson: gson 0.1.6
+			io_wispforest_endec_jankson: jankson 0.1.6
+			io_wispforest_endec_netty: netty 0.1.5
+		pingcounter: Ping Counter 1.0.1
+		pingfix: PingFix 3.1.0
+		placeholder-api: Placeholder API 2.7.2+1.21.8
+		pvpoptimizer: PvP Optimizer 1.0.0
+		roughlyenoughitems: Roughly Enough Items 20.0.811
+			error_notifier: Error Notifier 1.0.11
+		servercountryflags: Server Country Flags 1.10.4
+		serverpingerfixer: Server Pinger Fixer 1.0.5
+		showmeyourskin: Show Me Your Skin! 1.11.3+1.21.6
+		shulkerboxtooltip: Shulker Box Tooltip 5.2.12+1.21.8
+		skinlayers3d: 3d-Skin-Layers 1.11.2
+			transition: TRansition 1.0.21
+			trender: TRender 1.0.15
+		sodium: Sodium 0.6.13+mc1.21.6
+		voicechat: Simple Voice Chat 1.21.8-2.6.22
+			voicechat_api: Simple Voice Chat API 2.6.20
+		wi_zoom: WI Zoom 1.6-MC1.21.8
+		xaerominimap: Xaero's Minimap 25.2.12
+		xaeroworldmap: Xaero's World Map 1.39.13
+		yet_another_config_lib_v3: YetAnotherConfigLib 3.8.2+1.21.6-fabric
+			com_twelvemonkeys_common_common-image: common-image 3.12.0
+			com_twelvemonkeys_common_common-io: common-io 3.12.0
+			com_twelvemonkeys_common_common-lang: common-lang 3.12.0
+			com_twelvemonkeys_imageio_imageio-core: imageio-core 3.12.0
+			com_twelvemonkeys_imageio_imageio-metadata: imageio-metadata 3.12.0
+			com_twelvemonkeys_imageio_imageio-webp: imageio-webp 3.12.0
+			org_quiltmc_parsers_gson: gson 0.2.1
+			org_quiltmc_parsers_json: json 0.2.1
+	Launched Version: bedwars+++
+	Launcher name: minecraft-launcher
+	Backend library: LWJGL version 3.3.3-snapshot
+	Backend API: Intel(R) HD Graphics 520 GL version 3.2.0 - Build 27.20.100.9416, Intel
+	Window size: 1920x1080
+	GFLW Platform: win32
+	Render Extensions: GL_ARB_buffer_storage, GL_KHR_debug, GL_ARB_vertex_attrib_binding, GL_ARB_direct_state_access
+	GL debug messages: 
+	Is Modded: Definitely; Client brand changed to 'fabric'
+	Universe: 400921fb54442d18
+	Type: Client (map_client.txt)
+	Graphics mode: fancy
+	Render Distance: 9/9 chunks
+	Resource Packs: vanilla, fabric, autotools, balm (incompatible), bridgingmod, cardinal-components, cardinal-components-base, cardinal-components-block, cardinal-components-chunk, cardinal-components-entity, cardinal-components-item, cardinal-components-level, cardinal-components-scoreboard, cardinal-components-world, chatanimation, cicada, cloth-config, craftingtweaks (incompatible), custom-crosshair-mod, do_a_barrel_roll (incompatible), dynamiclights, entity_model_features (incompatible), entity_sound_features (incompatible), entity_texture_features (incompatible), exordium (incompatible), fabric-api, fabric-api-base, fabric-api-lookup-api-v1, fabric-biome-api-v1, fabric-block-api-v1, fabric-block-view-api-v2, fabric-command-api-v2, fabric-content-registries-v0, fabric-convention-tags-v1, fabric-convention-tags-v2, fabric-crash-report-info-v1, fabric-data-attachment-api-v1, fabric-data-generation-api-v1, fabric-dimensions-v1, fabric-entity-events-v1, fabric-events-interaction-v0, fabric-game-rule-api-v1, fabric-item-api-v1, fabric-item-group-api-v1, fabric-key-binding-api-v1, fabric-lifecycle-events-v1, fabric-loot-api-v2, fabric-loot-api-v3, fabric-message-api-v1, fabric-model-loading-api-v1, fabric-networking-api-v1, fabric-object-builder-api-v1, fabric-particles-v1, fabric-recipe-api-v1, fabric-registry-sync-v0, fabric-renderer-api-v1, fabric-renderer-indigo, fabric-rendering-fluids-v1, fabric-rendering-v1, fabric-resource-conditions-api-v1, fabric-resource-loader-v0, fabric-screen-api-v1, fabric-screen-handler-api-v1, fabric-serialization-api-v1, fabric-sound-api-v1, fabric-tag-api-v1, fabric-transfer-api-v1, fabric-transitive-access-wideners-v1, fabricloader, forgeconfigapiport, fpsreducer, freecam, fullscreenfix, gammautils, immediatelyfast, inventoryhud, jade (incompatible), litematica, malilib, minemath, modmenu, nemos_inventory_sorting (incompatible), owo, pingcounter, pingfix, placeholder-api, pvpoptimizer, roughlyenoughitems, servercountryflags, serverpingerfixer, showmeyourskin, shulkerboxtooltip, skinlayers3d (incompatible), sodium, trender (incompatible), voicechat, wi_zoom, xaerominimap (incompatible), xaeroworldmap (incompatible), yet_another_config_lib_v3 (incompatible), file/Eating Animation.zip, file/Faithful 64x - Release 10.zip, file/Fancy_Beds-v4.0.zip, file/Icons v.1.12.zip, file/Itsme64's smaller shield and totem.zip, file/VISIBLE ORES PLUS v1.6.0.zip, file/dynamiclights-v1.9-mc1.17-1.21.9-datapack.zip, nemos_inventory_sorting:dark_mode, black_icons, file/Better+Lanterns+v1.2(mc-1.21).zip (incompatible), file/Alittle_Axolotl.zip
+	Current Language: en_us
+	Locale: en_US
+	System encoding: Cp1252
+	File encoding: UTF-8
+	CPU: 4x AMD Ryzen 7 9850X3D 8-Core Processor
