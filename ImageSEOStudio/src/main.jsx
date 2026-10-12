@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { createClient } from "@supabase/supabase-js";
 import "./style.css";
@@ -9,6 +9,47 @@ const siteUrl = (import.meta.env.VITE_SITE_URL || window.location.origin).replac
 const supabase = supabaseUrl && supabaseKey && !supabaseUrl.includes("YOUR_PROJECT") ? createClient(supabaseUrl, supabaseKey) : null;
 const slugify = (value) => value.toLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "").slice(0, 90) || "image";
 const prettyBytes = (bytes) => bytes < 1024 * 1024 ? Math.round(bytes / 1024) + " KB" : (bytes / 1024 / 1024).toFixed(2) + " MB";
+
+
+function PublicImagePage({ slug }) {
+  const [record, setRecord] = useState(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    if (!supabase) { setError("برای مشاهده تصاویر منتشرشده، اتصال Supabase باید تنظیم شده باشد."); return; }
+    let active = true;
+    supabase.from("images").select("title,slug,alt_text,description,keywords,object_path,created_at").eq("slug", slug).eq("published", true).maybeSingle()
+      .then(({ data, error: queryError }) => {
+        if (!active) return;
+        if (queryError || !data) { setError("این تصویر پیدا نشد یا منتشر نشده است."); return; }
+        const { data: publicData } = supabase.storage.from("public-images").getPublicUrl(data.object_path);
+        setRecord({ ...data, imageUrl: publicData.publicUrl });
+        document.title = data.title + " | PixelIndex";
+        const setMeta = (name, value, property = false) => {
+          const selector = property ? 'meta[property="' + name + '"]' : 'meta[name="' + name + '"]';
+          let node = document.head.querySelector(selector);
+          if (!node) { node = document.createElement("meta"); node.setAttribute(property ? "property" : "name", name); document.head.appendChild(node); }
+          node.content = value || "";
+        };
+        setMeta("description", data.description || data.alt_text);
+        setMeta("robots", "index,follow");
+        setMeta("og:title", data.title, true);
+        setMeta("og:description", data.description || data.alt_text, true);
+        setMeta("og:image", publicData.publicUrl, true);
+        setMeta("og:type", "article", true);
+        let canonical = document.head.querySelector('link[rel="canonical"]');
+        if (!canonical) { canonical = document.createElement("link"); canonical.rel = "canonical"; document.head.appendChild(canonical); }
+        canonical.href = siteUrl + "/image/" + data.slug;
+        let ld = document.getElementById("image-object-jsonld");
+        if (!ld) { ld = document.createElement("script"); ld.id = "image-object-jsonld"; ld.type = "application/ld+json"; document.head.appendChild(ld); }
+        ld.textContent = JSON.stringify({ "@context":"https://schema.org", "@type":"ImageObject", name:data.title, description:data.description || data.alt_text, caption:data.alt_text, contentUrl:publicData.publicUrl, url:siteUrl + "/image/" + data.slug, keywords:(data.keywords || []).join(", ") });
+      }).catch(() => { if (active) setError("خطا در دریافت تصویر."); });
+    return () => { active = false; };
+  }, [slug]);
+  return <main className="shell public-page"><header className="topbar"><a className="brand" href="/"><span className="brand-mark">P<span>×</span></span><span>PIXEL<span className="muted">INDEX</span><small>IMAGE SEO STUDIO</small></span></a><a className="github-link" href="/">بازگشت به استودیو ↗</a></header>
+    {record ? <article className="public-image"><span className="step">PUBLIC IMAGE / INDEXABLE PAGE</span><h1>{record.title}</h1><img src={record.imageUrl} alt={record.alt_text}/><p>{record.description || record.alt_text}</p><div className="chips">{(record.keywords || []).map((word)=><span key={word}>{word}</span>)}</div><small className="public-alt">متن جایگزین: {record.alt_text}</small></article> : <div className="public-message"><span className="step">PIXELINDEX / IMAGE</span><h1>{error || "در حال دریافت تصویر..."}</h1><p>اگر مدیر سایت هستی، متغیرهای اتصال و سیاست‌های Supabase را بررسی کن.</p></div>}
+    <footer><span>PIXELINDEX <i>●</i> IMAGE DISCOVERY</span><span>INDEXING IS NOT GUARANTEED.</span></footer>
+  </main>;
+}
 
 function App() {
   const [file, setFile] = useState(null);
@@ -66,7 +107,7 @@ function App() {
   const copy = async (value) => { try { await navigator.clipboard.writeText(value); setNotice("کپی شد."); } catch { setNotice("کپی خودکار ممکن نیست؛ متن را دستی انتخاب کن."); } };
   const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@type": "ImageObject", name: title, description, caption: alt, contentUrl: publishedUrl || (preview ? "[PUBLIC_IMAGE_URL]" : ""), keywords: keywordList.join(", ") }, null, 2);
 
-  return <main className="shell">
+  if (window.location.pathname.startsWith("/image/")) return <PublicImagePage slug={decodeURIComponent(window.location.pathname.split("/").pop() || "")} />;\n\n  return <main className="shell">
     <header className="topbar"><a className="brand" href="#"><span className="brand-mark">P<span>×</span></span><span>PIXEL<span className="muted">INDEX</span><small>IMAGE SEO STUDIO</small></span></a><div className="top-actions"><span className="status-dot"></span><span>{supabase ? "اتصال آماده انتشار" : "حالت پیش‌نمایش"}</span><a className="github-link" href="https://github.com/TheROMZ52/all-the-dogs/tree/image-seo-studio/ImageSEOStudio" target="_blank" rel="noreferrer">سورس پروژه ↗</a></div></header>
     <section className="hero"><div className="eyebrow"><span></span> IMAGE DISCOVERY PLATFORM / 01</div><h1>عکس‌هات رو منتشر کن.<br/><em>قابل پیدا شدنشون کن.</em></h1><p>برای هر تصویر، متادیتای دقیق بساز، نتیجه جست‌وجو رو پیش‌نمایش کن و صفحه‌ای آماده برای موتورهای جست‌وجو منتشر کن.</p><div className="hero-stats"><div><strong>01</strong><span>آپلود تصویر</span></div><div><strong>02</strong><span>تنظیم سئو</span></div><div><strong>03</strong><span>انتشار عمومی</span></div></div></section>
     <section className="workspace">
