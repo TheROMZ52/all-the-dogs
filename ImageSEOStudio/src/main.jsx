@@ -82,27 +82,32 @@ function App() {
   const publish = async () => {
     if (!file || !title.trim() || !slug.trim() || !alt.trim()) return setNotice("تصویر، عنوان، آدرس یکتا و متن جایگزین را کامل کن.");
     if (!supabase) return setNotice("برای اتصال دیتابیس، متغیرهای Supabase را تنظیم کن.");
-    return setNotice("آپلود عمومی فعلاً غیرفعال است تا مسیر امن ضداسپم و محدودیت آپلود تکمیل شود.");
-    setBusy(true); setNotice("");
+    setBusy(true);
+    setNotice("");
     try {
-      const safeSlug = slugify(slug);
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const objectPath = safeSlug + "-" + crypto.randomUUID() + "." + ext;
-      const { error: uploadError } = await supabase.storage.from("public-images").upload(objectPath, file, { contentType: file.type, upsert: false });
-      if (uploadError) throw uploadError;
-      const { data: publicData } = supabase.storage.from("public-images").getPublicUrl(objectPath);
-      const { data, error: rowError } = await supabase.from("images").insert({
-        title: title.trim(), slug: safeSlug, alt_text: alt.trim(), description: description.trim(),
-        keywords: keywordList, object_path: objectPath, mime_type: file.type, size_bytes: file.size, published: true
-      }).select("id, slug, title").single();
-      if (rowError) throw rowError;
-      const url = siteUrl + "/image/" + data.slug;
-      setPublishedUrl(url);
-      setGallery((old) => [{ ...data, imageUrl: publicData.publicUrl, alt_text: alt, description }, ...old]);
-      setNotice("تصویر منتشر شد؛ ایندکس شدن در گوگل خودکار یا فوری تضمین نمی‌شود.");
+      const form = new FormData();
+      form.append("file", file);
+      form.append("title", title.trim());
+      form.append("slug", slug.trim());
+      form.append("alt_text", alt.trim());
+      form.append("description", description.trim());
+      form.append("keywords", JSON.stringify(keywordList));
+      const response = await fetch(supabaseUrl.replace(/\\/$/, "") + "/functions/v1/publish-image", {
+        method: "POST",
+        headers: { apikey: supabaseKey },
+        body: form
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "انتشار تصویر انجام نشد.");
+      const image = result.image;
+      setPublishedUrl(result.url);
+      setGallery((old) => [{ ...image }, ...old]);
+      setNotice("تصویر با موفقیت منتشر شد. ایندکس شدن در گوگل فوری یا تضمین‌شده نیست.");
     } catch (error) {
       setNotice("انتشار انجام نشد: " + (error?.message || "خطای ناشناخته"));
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   };
 
   const copy = async (value) => { try { await navigator.clipboard.writeText(value); setNotice("کپی شد."); } catch { setNotice("کپی خودکار ممکن نیست؛ متن را دستی انتخاب کن."); } };
