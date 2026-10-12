@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "imageframe-studio/**"
+      - "join/**"
       - ".github/workflows/imageframe-studio-pages.yml"
   workflow_dispatch:
 
@@ -31,6 +32,8 @@ jobs:
         run: |
           mkdir -p _site
           cp -R imageframe-studio/. _site/
+          mkdir -p _site/join
+          cp -R join/. _site/join/
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
