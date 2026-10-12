@@ -92,7 +92,7 @@ function App() {
       form.append("alt_text", alt.trim());
       form.append("description", description.trim());
       form.append("keywords", JSON.stringify(keywordList));
-      const response = await fetch(supabaseUrl.replace(/\\/$/, "") + "/functions/v1/publish-image", {
+      const response = await fetch(supabaseUrl + "/functions/v1/publish-image", {
         method: "POST",
         headers: { apikey: supabaseKey },
         body: form
