@@ -1,32 +1,30 @@
 # PixelIndex — Image SEO Studio
 
-A Persian-first image publishing and SEO metadata workspace. This project lives in its own folder in `TheROMZ52/all-the-dogs`.
+A Persian-first public image publishing and image-discovery workspace, located in \`TheROMZ52/all-the-dogs/ImageSEOStudio\`.
 
 ## Features
 - Responsive dark, neon-green interface with live search-result preview.
-- Image upload UI (JPG, PNG, WebP, GIF, AVIF; 10 MB limit; SVG rejected).
-- Per-image title, unique slug, alt text, description and comma-separated keywords.
-- Supabase Storage publishing and public metadata records.
-- JSON-LD `ImageObject` preview/copy helper.
-- SEO checklist and published image session gallery.
+- Per-image title, unique slug, descriptive alt text, description, and keywords.
+- Secure public publishing through a Supabase Edge Function; the service-role key stays server-side.
+- 10 MB image size limit, file-signature checks, and a five-publish-per-IP daily quota.
+- Public server-rendered image pages at \`/image/:slug\` with canonical, Open Graph, Twitter, ImageObject JSON-LD, and crawlable HTML image elements.
+- Server-rendered public gallery at \`/images\` with links to published image pages.
+- XML sitemap at \`/api/sitemap\` containing public pages and Google Image Sitemap metadata.
+- Homepage metadata, \`robots.txt\`, and live search-result preview.
 
-## Run locally
-```bash
-npm install
-cp .env.example .env
-npm run dev
-```
+## Environment
+Set these variables in Vercel:
+- \`VITE_SUPABASE_URL\`
+- \`VITE_SUPABASE_ANON_KEY\` (publishable/anon key only; never the service-role key)
+- \`VITE_SITE_URL=https://pixelindex-the-romz-52.vercel.app\`
 
-## Enable public publishing
-1. Create a Supabase project.
-2. Run `supabase/schema.sql` in the Supabase SQL editor.
-3. Set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_SITE_URL` in `.env` for the browser app.
-4. For Vercel, also configure `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SITE_URL` in project environment variables so the serverless image sitemap can read public records.
-5. Deploy the `ImageSEOStudio` folder as a Vercel project with the Vite build preset.
+The sitemap and server-rendered pages also read \`SUPABASE_URL\`, \`SUPABASE_ANON_KEY\`, and \`SITE_URL\` if set. The existing VITE-prefixed values are supported as fallbacks.
 
-**Security note:** the included starter schema intentionally demonstrates public uploads. Before opening this to the public internet, add rate limits, CAPTCHA/abuse controls, moderation and storage quotas. Never put a Supabase service-role key in client-side environment variables. The public anon key is designed for browser use only with appropriate RLS policies.
+## Google indexing
+1. Verify the production site in Google Search Console.
+2. Submit \`https://pixelindex-the-romz-52.vercel.app/api/sitemap\`.
+3. Use URL Inspection on the homepage, \`/images\`, and selected \`/image/:slug\` pages.
+4. Check that Google can crawl both each HTML image page and the public image URL.
+5. Improve every image's title and alt text so they accurately describe the actual image; do not stuff keywords.
 
-## Important Google indexing notes
-Uploading an image does not automatically put it in Google Images or guarantee indexing. The deployed site needs crawlable, public, stable image URLs; each image should have a public HTML page with a unique title, descriptive alt text and canonical URL; publish a sitemap (ideally an image sitemap), verify the domain in Google Search Console, and request indexing where appropriate. Indexing and ranking are decided by Google.
-
-Published images have a client-rendered public detail route with canonical/Open Graph metadata and ImageObject JSON-LD, plus a Vercel `/api/sitemap` endpoint that emits an image sitemap. The UI search preview is illustrative; Google controls the final appearance and crawl/index decisions. As a client-rendered Vite app, search engines may need time to render the page JavaScript; server-rendered HTML would be stronger for dependable SEO.
+Sitemap inclusion, metadata, and structured data help discovery but cannot guarantee indexing or rankings. New images can take time to be crawled. Stronger bot protection such as CAPTCHA/Turnstile and moderation can be added later if abuse appears; the current upload controls are rate limits and file validation, not a full CAPTCHA.
