@@ -81,7 +81,8 @@ function App() {
 
   const publish = async () => {
     if (!file || !title.trim() || !slug.trim() || !alt.trim()) return setNotice("تصویر، عنوان، آدرس یکتا و متن جایگزین را کامل کن.");
-    if (!supabase) return setNotice("برای انتشار عمومی، ابتدا Supabase را بساز، schema.sql را اجرا و متغیرهای .env را تنظیم کن. پیش‌نمایش محلی فعال است.");
+    if (!supabase) return setNotice("برای اتصال دیتابیس، متغیرهای Supabase را تنظیم کن.");
+    return setNotice("آپلود عمومی فعلاً غیرفعال است تا مسیر امن ضداسپم و محدودیت آپلود تکمیل شود.");
     setBusy(true); setNotice("");
     try {
       const safeSlug = slugify(slug);
@@ -107,8 +108,10 @@ function App() {
   const copy = async (value) => { try { await navigator.clipboard.writeText(value); setNotice("کپی شد."); } catch { setNotice("کپی خودکار ممکن نیست؛ متن را دستی انتخاب کن."); } };
   const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@type": "ImageObject", name: title, description, caption: alt, contentUrl: publishedUrl || (preview ? "[PUBLIC_IMAGE_URL]" : ""), keywords: keywordList.join(", ") }, null, 2);
 
-  if (window.location.pathname.startsWith("/image/")) return <PublicImagePage slug={decodeURIComponent(window.location.pathname.split("/").pop() || "")} />;\n\n  return <main className="shell">
-    <header className="topbar"><a className="brand" href="#"><span className="brand-mark">P<span>×</span></span><span>PIXEL<span className="muted">INDEX</span><small>IMAGE SEO STUDIO</small></span></a><div className="top-actions"><span className="status-dot"></span><span>{supabase ? "اتصال آماده انتشار" : "حالت پیش‌نمایش"}</span><a className="github-link" href="https://github.com/TheROMZ52/all-the-dogs/tree/image-seo-studio/ImageSEOStudio" target="_blank" rel="noreferrer">سورس پروژه ↗</a></div></header>
+  if (window.location.pathname.startsWith("/image/")) return <PublicImagePage slug={decodeURIComponent(window.location.pathname.split("/").pop() || "")} />;
+
+  return <main className="shell">
+    <header className="topbar"><a className="brand" href="#"><span className="brand-mark">P<span>×</span></span><span>PIXEL<span className="muted">INDEX</span><small>IMAGE SEO STUDIO</small></span></a><div className="top-actions"><span className="status-dot"></span><span>{supabase ? "اتصال دیتابیس فعال" : "حالت پیش‌نمایش"}</span><a className="github-link" href="https://github.com/TheROMZ52/all-the-dogs/tree/image-seo-studio/ImageSEOStudio" target="_blank" rel="noreferrer">سورس پروژه ↗</a></div></header>
     <section className="hero"><div className="eyebrow"><span></span> IMAGE DISCOVERY PLATFORM / 01</div><h1>عکس‌هات رو منتشر کن.<br/><em>قابل پیدا شدنشون کن.</em></h1><p>برای هر تصویر، متادیتای دقیق بساز، نتیجه جست‌وجو رو پیش‌نمایش کن و صفحه‌ای آماده برای موتورهای جست‌وجو منتشر کن.</p><div className="hero-stats"><div><strong>01</strong><span>آپلود تصویر</span></div><div><strong>02</strong><span>تنظیم سئو</span></div><div><strong>03</strong><span>انتشار عمومی</span></div></div></section>
     <section className="workspace">
       <div className="editor-panel">
