@@ -21,13 +21,12 @@ main{
 }
 .hero{
   font-weight:900;font-size:clamp(4rem,22vw,9rem);line-height:1;
-  letter-spacing:0;display:flex;gap:.02em;
+  letter-spacing:0;display:flex;gap:.25em;
   text-shadow:0 0 40px rgba(25,227,197,.35);
 }
 .hero span{display:inline-block;opacity:0;transform:translateY(60%) rotate(6deg);animation:rise .9s cubic-bezier(.2,.9,.2,1) forwards}
-.hero span:nth-child(1){animation-delay:.05s}.hero span:nth-child(2){animation-delay:.12s}
-.hero span:nth-child(3){animation-delay:.19s}.hero span:nth-child(5){animation-delay:.3s}
-.hero span:nth-child(6){animation-delay:.37s;color:var(--firuze)}
+.hero span:nth-child(1){animation-delay:.1s}
+.hero span:nth-child(2){animation-delay:.3s;color:var(--firuze)}
 @keyframes rise{to{opacity:1;transform:none}}
 
 .card{
