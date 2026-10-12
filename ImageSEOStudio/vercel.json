@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/image/(.*)",
-      "destination": "/index.html"
+      "source": "/images",
+      "destination": "/api/images"
+    },
+    {
+      "source": "/image/:slug",
+      "destination": "/api/image/:slug"
     }
   ]
 }
