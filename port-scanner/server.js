@@ -10,6 +10,10 @@ const publicDir = path.join(__dirname, 'public');
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 8787);
 const DEFAULT_TIMEOUT = 1200;
+const MAX_HOSTS = 256;
+const MAX_PORTS = 5000;
+const MAX_PROBES = 5000;
+const MAX_CONCURRENCY = 128;
 
 const commonServices = new Map([
   [20, 'FTP-Data'], [21, 'FTP'], [22, 'SSH'], [23, 'Telnet'], [25, 'SMTP'],
@@ -109,12 +113,14 @@ function parseTargets(input) {
     const cidr = parseCidr(item);
     const range = cidr || parseIpv4Range(item);
     if (range) {
+      if (range.length > MAX_HOSTS) throw new Error(`"${item}" expands to ${range.length} hosts, which exceeds the ${MAX_HOSTS}-host limit. Use a narrower range.`);
       for (const address of range) values.add(address);
     } else {
       if (item.includes('/')) throw new Error(`Invalid CIDR target: ${item}`);
       if (item.includes('-')) throw new Error(`Invalid IP range: ${item}`);
       values.add(item.replace(/^\[|\]$/g, ''));
     }
+    if (values.size > MAX_HOSTS) throw new Error(`Maximum scan size is ${MAX_HOSTS} hosts.`);
   }
 
   return [...values];
@@ -134,6 +140,7 @@ function parsePorts(input) {
       let end = Number(range[2]);
       if (start > end) [start, end] = [end, start];
       if (start < 1 || end > 65535) throw new Error('Ports must be between 1 and 65535.');
+      if (end - start + 1 > MAX_PORTS) throw new Error(`A single range cannot exceed ${MAX_PORTS} ports.`);
       for (let p = start; p <= end; p++) values.add(p);
     } else if (/^\d+$/.test(item)) {
       const p = Number(item);
@@ -142,6 +149,7 @@ function parsePorts(input) {
     } else {
       throw new Error(`Invalid port expression: ${item}`);
     }
+    if (values.size > MAX_PORTS) throw new Error(`Maximum scan size is ${MAX_PORTS} ports.`);
   }
 
   return [...values].sort((a, b) => a - b);
@@ -184,12 +192,13 @@ function probe(address, port, timeout, family) {
   });
 }
 
-async function runScan(body, write) {
+async function runScan(body, write, isAborted) {
   const targets = parseTargets(body.host);
   const ports = parsePorts(body.ports);
   const probes = targets.length * ports.length;
+  if (probes > MAX_PROBES) throw new Error(`This scan would run ${probes.toLocaleString()} probes, which exceeds the ${MAX_PROBES.toLocaleString()}-probe limit. Narrow your host or port range.`);
   const timeout = Math.min(Math.max(Number(body.timeout) || DEFAULT_TIMEOUT, 250), 5000);
-  const concurrency = Math.max(Number(body.concurrency) || 64, 1);
+  const concurrency = Math.min(Math.max(Number(body.concurrency) || 64, 1), MAX_CONCURRENCY);
   const startedAt = new Date().toISOString();
   let completed = 0;
   const results = [];
@@ -197,18 +206,22 @@ async function runScan(body, write) {
   const resolvedTargets = [];
 
   for (const target of targets) {
+    if (isAborted()) return;
     resolvedTargets.push(await resolveHost(target));
   }
 
+  if (isAborted()) return;
   write({ type: 'start', targets, resolvedTargets, total: probes, hosts: targets.length, ports: ports.length, timeout, concurrency, startedAt });
 
   const jobs = resolvedTargets.flatMap(resolved => ports.map(port => ({ resolved, port })));
   const worker = async () => {
     while (true) {
+      if (isAborted()) return;
       const index = cursor++;
       if (index >= jobs.length) return;
       const job = jobs[index];
       const result = await probe(job.resolved.address, job.port, timeout, job.resolved.family === 'IPv6' ? 6 : 4);
+      if (isAborted()) return;
       results.push(result);
       completed++;
       write({ type: 'result', result, completed, total: jobs.length });
@@ -216,6 +229,7 @@ async function runScan(body, write) {
   };
 
   await Promise.all(Array.from({ length: Math.min(concurrency, jobs.length) }, worker));
+  if (isAborted()) return;
   results.sort((a, b) => a.address.localeCompare(b.address, undefined, { numeric: true }) || a.port - b.port);
   const elapsedMs = Math.round(performance.now());
   write({
@@ -265,13 +279,15 @@ const server = http.createServer(async (req, res) => {
         connection: 'keep-alive',
         'x-content-type-options': 'nosniff'
       });
-      const write = payload => res.write(`${JSON.stringify(payload)}\n`);
+      let aborted = false;
+      res.on('close', () => { aborted = true; });
+      const write = payload => { try { if (!res.writableEnded) res.write(`${JSON.stringify(payload)}\n`); } catch {} };
       try {
-        await runScan(body, write);
+        await runScan(body, write, () => aborted);
       } catch (error) {
         write({ type: 'error', error: error.message || 'Scan failed' });
       } finally {
-        res.end();
+        if (!res.writableEnded) res.end();
       }
       return;
     }
