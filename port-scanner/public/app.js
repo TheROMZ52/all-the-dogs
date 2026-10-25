@@ -21,15 +21,22 @@ const serviceCount = document.getElementById('serviceCount');
 const servicesList = document.getElementById('servicesList');
 const openOnlyButton = document.getElementById('openOnly');
 const clearResultsButton = document.getElementById('clearResults');
+const hideNonOpenButton = document.getElementById('hideNonOpen');
+const exportCsvButton = document.getElementById('exportCsv');
+const stopButton = document.getElementById('stopButton');
 
 let rows = [];
 let openOnly = false;
+let hideNonOpen = true;
+let activeController = null;
 
 const escapeHtml = value => String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 const fmt = value => Number(value).toLocaleString();
 
 function setRunning(running) {
   scanButton.disabled = running;
+  scanButton.style.display = running ? 'none' : 'flex';
+  stopButton.style.display = running ? 'flex' : 'none';
   scanButton.querySelector('span:first-child').textContent = running ? 'SCANNING' : 'START SCAN';
   engineBadge.textContent = running ? 'LIVE' : 'IDLE';
   engineBadge.classList.toggle('live', running);
@@ -80,7 +87,7 @@ function renderRows() {
 }
 
 function addResult(result, completed, total) {
-  rows.push(result);
+  if (!hideNonOpen || result.status === 'open') rows.push(result);
   scannedCount.textContent = fmt(completed);
   if (result.status === 'open') openCount.textContent = fmt(Number(openCount.textContent) + 1);
   if (result.status === 'closed') closedCount.textContent = fmt(Number(closedCount.textContent) + 1);
@@ -93,11 +100,12 @@ function addResult(result, completed, total) {
   renderServices();
 }
 
-async function consumeScan(payload) {
+async function consumeScan(payload, signal) {
   const response = await fetch('/api/scan', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
+    signal
   });
   if (!response.ok || !response.body) throw new Error(`Scanner returned HTTP ${response.status}`);
 
@@ -150,15 +158,45 @@ form.addEventListener('submit', async event => {
   progressShell.hidden = false;
   resolvedHost.textContent = 'Resolving…';
   resolvedFamily.textContent = '—';
+  activeController = new AbortController();
   try {
-    await consumeScan({ host: hostInput.value.trim(), ports: portsInput.value.trim(), timeout: Number(timeoutInput.value), concurrency: Number(concurrencyInput.value) });
+    await consumeScan({ host: hostInput.value.trim(), ports: portsInput.value.trim(), timeout: Number(timeoutInput.value), concurrency: Number(concurrencyInput.value) }, activeController.signal);
   } catch (error) {
-    targetSummary.textContent = error.message || 'Scan failed.';
-    resolvedHost.textContent = '—';
-    resolvedFamily.textContent = '—';
+    if (error.name === 'AbortError') {
+      targetSummary.textContent = `Scan stopped · ${fmt(rows.length)} result${rows.length === 1 ? '' : 's'} kept`;
+    } else {
+      targetSummary.textContent = error.message || 'Scan failed.';
+      resolvedHost.textContent = '—';
+      resolvedFamily.textContent = '—';
+    }
   } finally {
+    activeController = null;
     setRunning(false);
   }
+});
+
+stopButton.addEventListener('click', () => {
+  if (activeController) activeController.abort();
+});
+
+hideNonOpenButton.addEventListener('click', () => {
+  hideNonOpen = !hideNonOpen;
+  hideNonOpenButton.classList.toggle('active', hideNonOpen);
+});
+
+exportCsvButton.addEventListener('click', () => {
+  if (!rows.length) return;
+  const header = 'host,port,service,status,latency_ms\n';
+  const body = rows.map(r => [r.address, r.port, r.service, r.status, r.latency].join(',')).join('\n');
+  const blob = new Blob([header + body], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `port-scan-${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 });
 
 document.querySelectorAll('[data-host-preset]').forEach(button => button.addEventListener('click', () => {
