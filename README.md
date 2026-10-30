@@ -1,5 +1,6 @@
 # TheROMZ52 — Mini Projects & Experiments
 
+A drawer full of side quests: open a folder, find a project, and try not to start three more.
 A collection of independent small projects, prototypes, utilities, and experiments.
 
 [English](README.md) · [فارسی](README.fa.md)
