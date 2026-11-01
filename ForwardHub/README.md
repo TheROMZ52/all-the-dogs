@@ -5,7 +5,7 @@ A responsive Persian-language central link hub for TheROMZ52's known websites an
 ## Contents
 
 - `index.html` — standalone static website; no build step or dependencies required.
-- Links to KootletLand, KillZone, and selected project repositories.
+- Links to KotletLand, KillZone, and selected project repositories.
 
 ## Run locally
 

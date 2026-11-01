@@ -1,4 +1,4 @@
-package ir.kootletland.tools.core;
+package ir.kotletland.tools.core;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

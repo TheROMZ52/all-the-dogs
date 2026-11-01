@@ -12,7 +12,7 @@
 |---|---|
 | [ForwardHub](ForwardHub/) | صفحهٔ فارسی و واکنش‌گرا برای تجمیع لینک وب‌سایت‌ها و مخزن‌های منتخب. |
 | [ImageSEOStudio](ImageSEOStudio/) | برنامه‌ای مبتنی بر React و Vite با اتصال به Supabase. |
-| [KootletTools](KootletTools/) | افزونهٔ Paper 1.21.4 و Java 21 برای کتلت‌لند با قابلیت‌های Compressor، Guard، AutoPickup و AutoSmelt. |
+| [KotletTools](KotletTools/) | افزونهٔ Paper 1.21.4 و Java 21 برای کتلت‌لند با قابلیت‌های Compressor، Guard، AutoPickup و AutoSmelt. |
 | [ZahraNails](ZahraNails/) | وب‌سایت فارسی و راست‌چین سالن ناخن با گالری نمونه‌کار، خدمات، درخواست نوبت و پنل مدیریت. |
 | [imageframe-studio](imageframe-studio/) | ابزار تحت وب برای مدیریت تصاویر و ساخت دستورهای Minecraft ImageFrame. |
 | [port-scanner](port-scanner/) | پروژهٔ پورت‌اسکنر با Node.js. |

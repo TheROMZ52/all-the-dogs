@@ -1,0 +1,40 @@
+name: KotletTools
+version: 1.0.0
+main: ir.kotletland.tools.KotletTools
+api-version: '1.21'
+authors: [Mahbod]
+description: Compressor, CompressedGuard, AutoPickup and AutoSmelt in one plugin. Every module has its own config folder.
+
+commands:
+  kotlettools:
+    description: About the plugin / reload a module
+    usage: /kotlettools [about|reload [module]]
+    aliases: [kt]
+  compress:
+    description: Compress items or export the current inventory
+    usage: /compress [<item>|hand|list|auto|exportinventory]
+    permission: kotlettools.compress
+  decompress:
+    description: Turn compressed items back into normal items
+    usage: /decompress [all]
+    aliases: [uncompress]
+    permission: kotlettools.decompress
+  autopickup:
+    description: Turn auto pickup on or off for yourself
+    usage: /autopickup
+    permission: kotlettools.autopickup
+  autosmelt:
+    description: Turn auto smelt on or off for yourself
+    usage: /autosmelt
+    permission: kotlettools.autosmelt
+permissions:
+  kotlettools.admin: {description: /kotlettools reload, default: op}
+  kotlettools.compress: {default: true}
+  kotlettools.compress.export: {description: Export your current inventory to YAML, default: op}
+  kotlettools.decompress: {default: true}
+  kotlettools.compress.auto: {default: true}
+  kotlettools.autopickup: {description: Use the /autopickup toggle, default: true}
+  kotlettools.autopickup.use: {description: Needed when require-permission is true, default: false}
+  kotlettools.autosmelt: {description: Use the /autosmelt toggle, default: true}
+  kotlettools.autosmelt.use: {description: Needed when require-permission is true, default: false}
+  kotlettools.guard.bypass: {description: Not affected by the guard module, default: false}

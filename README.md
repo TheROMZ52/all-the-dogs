@@ -12,7 +12,7 @@ A collection of independent small projects, prototypes, utilities, and experimen
 |---|---|
 | [ForwardHub](ForwardHub/) | A responsive Persian link hub for selected websites and project repositories. |
 | [ImageSEOStudio](ImageSEOStudio/) | A React + Vite application with Supabase client integration. |
-| [KootletTools](KootletTools/) | A Paper 1.21.4 / Java 21 plugin for KootletLand with Compressor, Guard, AutoPickup, and AutoSmelt features. |
+| [KotletTools](KotletTools/) | A Paper 1.21.4 / Java 21 plugin for KotletLand with Compressor, Guard, AutoPickup, and AutoSmelt features. |
 | [ZahraNails](ZahraNails/) | A Persian, RTL nail-studio website with a portfolio, services, appointment requests, and an admin panel. |
 | [imageframe-studio](imageframe-studio/) | A browser-based tool for image libraries and Minecraft ImageFrame command generation. |
 | [port-scanner](port-scanner/) | A Node.js port-scanner project. |

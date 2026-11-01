@@ -1,4 +1,4 @@
-package ir.kootletland.tools.core;
+package ir.kotletland.tools.core;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;

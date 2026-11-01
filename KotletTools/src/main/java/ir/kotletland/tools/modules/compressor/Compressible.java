@@ -1,4 +1,4 @@
-package ir.kootletland.tools.modules.compressor;
+package ir.kotletland.tools.modules.compressor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import java.util.List;

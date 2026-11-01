@@ -1,8 +1,8 @@
-package ir.kootletland.tools.modules.guard;
+package ir.kotletland.tools.modules.guard;
 import io.papermc.paper.event.player.PlayerStonecutterRecipeSelectEvent;
-import ir.kootletland.tools.KootletTools;
-import ir.kootletland.tools.core.Text;
-import ir.kootletland.tools.core.ToolModule;
+import ir.kotletland.tools.KotletTools;
+import ir.kotletland.tools.core.Text;
+import ir.kotletland.tools.core.ToolModule;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
@@ -11,8 +11,8 @@ import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 public final class GuardModule extends ToolModule {
- private static final String BYPASS="kootlettools.guard.bypass"; private List<String> names=List.of(); private boolean craft,stone,smelt,anvil;
- public GuardModule(KootletTools p){super(p,"guard");}
+ private static final String BYPASS="kotlettools.guard.bypass"; private List<String> names=List.of(); private boolean craft,stone,smelt,anvil;
+ public GuardModule(KotletTools p){super(p,"guard");}
  protected void onEnable(){names=config.getStringList("protected-names").stream().map(Text::cleanName).filter(x->!x.isEmpty()).toList();craft=config.getBoolean("block.crafting",true);stone=config.getBoolean("block.stonecutter",true);smelt=config.getBoolean("block.smelting",true);anvil=config.getBoolean("block.anvil",true);}
  private boolean protectedItem(ItemStack i){if(i==null||i.getType().isAir()||names.isEmpty())return false;ItemMeta m=i.getItemMeta();if(m==null||!m.hasDisplayName())return false;Component n=m.displayName();if(n==null)return false;String p=Text.plainLower(n);return names.stream().anyMatch(p::contains);}
  private boolean bypass(List<HumanEntity> v){return v.stream().anyMatch(x->x.hasPermission(BYPASS));}
