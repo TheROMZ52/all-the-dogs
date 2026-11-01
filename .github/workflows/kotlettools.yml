@@ -1,10 +1,10 @@
-name: Build KootletTools
+name: Build KotletTools
 
 on:
   push:
     paths:
-      - "KootletTools/**"
-      - ".github/workflows/kootlettools.yml"
+      - "KotletTools/**"
+      - ".github/workflows/kotlettools.yml"
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: KootletTools
+        working-directory: KotletTools
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -28,5 +28,5 @@ jobs:
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
-          name: KootletTools
-          path: KootletTools/target/KootletTools.jar
+          name: KotletTools
+          path: KotletTools/target/KotletTools.jar

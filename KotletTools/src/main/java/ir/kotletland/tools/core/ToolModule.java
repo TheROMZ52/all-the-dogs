@@ -1,5 +1,5 @@
-package ir.kootletland.tools.core;
-import ir.kootletland.tools.KootletTools;
+package ir.kotletland.tools.core;
+import ir.kotletland.tools.KotletTools;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.*;
 import org.bukkit.World;
@@ -9,8 +9,8 @@ import org.bukkit.event.*;
 import java.io.File;
 import java.util.*;
 public abstract class ToolModule implements Listener {
- protected final KootletTools plugin; private final String id; protected FileConfiguration config=new YamlConfiguration(); private boolean active;
- protected ToolModule(KootletTools p,String i){plugin=p;id=i;} public final String id(){return id;} public final boolean active(){return active;}
+ protected final KotletTools plugin; private final String id; protected FileConfiguration config=new YamlConfiguration(); private boolean active;
+ protected ToolModule(KotletTools p,String i){plugin=p;id=i;} public final String id(){return id;} public final boolean active(){return active;}
  public List<String> commands(){return List.of();} protected abstract void onEnable(); protected void onDisable(){} public boolean handleCommand(CommandSender s,Command c,String l,String[] a){return false;} public List<String> complete(CommandSender s,Command c,String[] a){return List.of();}
  public final void start(){read();if(!config.getBoolean("enabled",true)){active=false;return;}onEnable();plugin.getServer().getPluginManager().registerEvents(this,plugin);active=true;}
  public final void stop(){if(!active)return;HandlerList.unregisterAll(this);onDisable();active=false;} public final void restart(){stop();start();}

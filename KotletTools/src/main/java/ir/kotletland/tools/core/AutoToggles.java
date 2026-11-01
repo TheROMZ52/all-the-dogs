@@ -1,4 +1,4 @@
-package ir.kootletland.tools.core;
+package ir.kotletland.tools.core;
 import org.bukkit.plugin.Plugin;
 public final class AutoToggles {
  private final PlayerToggle compressor,pickup,smelt;
