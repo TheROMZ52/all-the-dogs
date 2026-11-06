@@ -20,6 +20,29 @@ jobs:
       - name: Extract project
         run: unzip -o LEVEL_UP_v3.zip -d .
 
+      - name: Align Java and Kotlin JVM targets
+        working-directory: LEVEL_UP
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("app/build.gradle.kts")
+          s = p.read_text()
+          marker = '    compileOptions {'
+          if marker not in s:
+              s = s.replace(
+                  '    buildFeatures { compose = true }',
+                  '''    compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+              }
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+              buildFeatures { compose = true }'''
+              )
+          p.write_text(s)
+          PY
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
