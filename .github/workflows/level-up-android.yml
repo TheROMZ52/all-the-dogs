@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "LEVEL_UP_v3.zip.b64"
+      - "LEVEL_UP_v3.zip"
       - ".github/workflows/level-up-android.yml"
 
 permissions:
@@ -17,10 +17,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Restore project archive
-        run: |
-          base64 --decode LEVEL_UP_v3.zip.b64 > /tmp/LEVEL_UP_v3.zip
-          unzip -o /tmp/LEVEL_UP_v3.zip -d .
+      - name: Extract project
+        run: unzip -o LEVEL_UP_v3.zip -d .
 
       - name: Set up Java
         uses: actions/setup-java@v4
