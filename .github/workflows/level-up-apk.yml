@@ -6,6 +6,9 @@ on:
     paths: ['LevelUp/**', '.github/workflows/level-up-apk.yml']
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,3 +37,13 @@ jobs:
         with:
           name: LEVEL_UP-debug-apk
           path: LevelUp/app/build/outputs/apk/debug/*.apk
+      - name: Publish release (direct APK link)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk LEVEL_UP.apk
+          gh release create "level-up-b${{ github.run_number }}" LEVEL_UP.apk \
+            --title "LEVEL UP (build ${{ github.run_number }})" \
+            --notes "APK دیباگ برنامه LEVEL UP. برای نصب، نصب از منابع ناشناس را فعال کن." \
+            --target "${{ github.sha }}" --prerelease
