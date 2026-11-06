@@ -22,7 +22,14 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Build debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee build.log
+      - name: Report errors
+        if: failure()
+        run: |
+          msg=$(grep -E "^e: |error:|What went wrong|Could not|Execution failed|not found|Caused by|FAILURE" -A3 build.log | head -60 | cut -c1-300 | sed ':a;N;$!ba;s/\n/%0A/g')
+          echo "::error title=Gradle::$msg"
       - uses: actions/upload-artifact@v4
         with:
           name: LEVEL_UP-debug-apk
