@@ -36,3 +36,8 @@ create policy "Authors can edit their articles" on public.articles for update to
 create policy "Authors can delete their articles" on public.articles for delete to authenticated using (auth.uid() = author_id);
 create policy "Users can submit reports" on public.reports for insert to authenticated with check (auth.uid() = reporter_id);
 create policy "Users can view their own reports" on public.reports for select to authenticated using (auth.uid() = reporter_id);
+
+grant usage on schema public to anon, authenticated;
+grant select on public.articles to anon, authenticated;
+grant insert, update, delete on public.articles to authenticated;
+grant insert, select on public.reports to authenticated;
