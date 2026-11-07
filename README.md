@@ -35,6 +35,7 @@ A collection of independent small projects, prototypes, utilities, and experimen
 | [imageframe-studio](imageframe-studio/) | A browser-based tool for image libraries and Minecraft ImageFrame command generation. |
 | [port-scanner](port-scanner/) | A Node.js port-scanner project. |
 | [join](join/) | A Persian join page that asks for a name before showing Telegram and Rubika links. |
+| [ShadowForum](ShadowForum/) | A pseudonymous knowledge archive built with Next.js and Supabase. |
 
 ---
 
