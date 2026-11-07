@@ -48,7 +48,7 @@ export default function Home() {
     event.preventDefault(); if (!client) return;
     const form = new FormData(event.currentTarget); const email = String(form.get('email')); const password = String(form.get('password'));
     const username = String(form.get('username') || '').trim(); setBusy(true); setNotice('');
-    const result = authMode === 'signup' ? await client.auth.signUp({email,password,options:{data:{username}}}) : await client.auth.signInWithPassword({email,password});
+    const result = authMode === 'signup' ? await client.auth.signUp({email,password,options:{data:{username},emailRedirectTo:window.location.origin}}) : await client.auth.signInWithPassword({email,password});
     setBusy(false);
     if (result.error) return setNotice(result.error.message);
     if (authMode === 'signup' && !result.data.session) setNotice('Check your email to confirm your account.');
