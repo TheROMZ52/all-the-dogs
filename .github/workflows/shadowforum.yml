@@ -1,0 +1,28 @@
+name: ShadowForum build
+
+on:
+  push:
+    branches: [main, feat/shadowforum]
+    paths:
+      - "ShadowForum/**"
+      - ".github/workflows/shadowforum.yml"
+  pull_request:
+    paths:
+      - "ShadowForum/**"
+      - ".github/workflows/shadowforum.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ShadowForum
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ShadowForum/package-lock.json
+      - run: npm install
+      - run: npm run build
