@@ -28,12 +28,12 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Set the Supabase project URL and anon key in `.env.local`. Then run `supabase/schema.sql` in the Supabase SQL Editor.
+Set the Supabase project URL and publishable key in `.env.local`. Then run `supabase/schema.sql` in the Supabase SQL Editor.
 
 Required environment variables:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 Open http://localhost:3000.
 
