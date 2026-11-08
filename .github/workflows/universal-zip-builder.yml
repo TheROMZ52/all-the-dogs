@@ -43,6 +43,10 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Set up Android SDK
+        if: ${{ inputs.project_type == 'android' || inputs.project_type == 'auto' }}
+        uses: android-actions/setup-android@v3
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -57,6 +61,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y zip unzip gradle maven
+
+      - name: Test builder safety and detection
+        run: python -m unittest discover -s UniversalZipBuilder/tests -v
 
       - name: Download, inspect, and build
         env:
