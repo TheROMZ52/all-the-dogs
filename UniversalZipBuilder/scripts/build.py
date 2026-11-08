@@ -13,6 +13,8 @@ import zipfile
 from pathlib import Path, PurePosixPath
 
 MAX_DOWNLOAD = 500 * 1024 * 1024
+MAX_EXTRACTED = 1024 * 1024 * 1024
+MAX_FILES = 20000
 BUILD_TIMEOUT = 30 * 60
 ROOT = Path.cwd()
 WORK = ROOT / "work"
@@ -24,25 +26,35 @@ def validate_url(value: str) -> str:
     parsed = urllib.parse.urlparse(value)
     if parsed.scheme != "https" or not parsed.hostname:
         raise ValueError("Source URL must be a valid HTTPS URL.")
-    host = parsed.hostname.lower()
-    if host in {"localhost"} or host.endswith(".localhost") or host.endswith(".local"):
+    if parsed.username or parsed.password:
+        raise ValueError("Credentials embedded in source URLs are not allowed.")
+    if parsed.port not in (None, 443):
+        raise ValueError("Only the standard HTTPS port is allowed.")
+    host = parsed.hostname.rstrip(".").lower()
+    if host == "localhost" or host.endswith((".localhost", ".local")):
         raise ValueError("Local network hosts are not allowed.")
     try:
         addresses = socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
     except OSError as exc:
         raise ValueError(f"Could not resolve source host: {exc}") from exc
+    if not addresses:
+        raise ValueError("Source host did not resolve.")
     for item in addresses:
-        ip = ipaddress.ip_address(item[4][0])
-        if not ip.is_global:
+        if not ipaddress.ip_address(item[4][0]).is_global:
             raise ValueError("Private, loopback, and reserved IP addresses are not allowed.")
     return value
 
 
+class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        validate_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 def download_zip(url: str, destination: Path) -> None:
-    request = urllib.request.Request(url, headers={"User-Agent": "UniversalZipBuilder/0.1"})
-    with urllib.request.urlopen(request, timeout=45) as response, destination.open("wb") as out:
-        final_url = response.geturl()
-        validate_url(final_url)
+    opener = urllib.request.build_opener(SafeRedirectHandler)
+    request = urllib.request.Request(validate_url(url), headers={"User-Agent": "UniversalZipBuilder/0.2"})
+    with opener.open(request, timeout=45) as response, destination.open("wb") as out:
         total = 0
         while True:
             chunk = response.read(1024 * 1024)
@@ -56,24 +68,45 @@ def download_zip(url: str, destination: Path) -> None:
 
 def safe_extract(archive: Path, destination: Path) -> None:
     destination.mkdir(parents=True, exist_ok=True)
+    destination_resolved = destination.resolve()
     with zipfile.ZipFile(archive) as zf:
-        for info in zf.infolist():
+        infos = zf.infolist()
+        if len(infos) > MAX_FILES:
+            raise ValueError("ZIP contains too many entries.")
+        declared_total = sum(info.file_size for info in infos)
+        if declared_total > MAX_EXTRACTED:
+            raise ValueError("Expanded ZIP exceeds the 1 GiB extraction limit.")
+        actual_total = 0
+        for info in infos:
             name = info.filename.replace("\\", "/")
             path = PurePosixPath(name)
             mode = info.external_attr >> 16
-            if path.is_absolute() or any(part in {"..", ""} for part in path.parts):
+            if path.is_absolute() or not path.parts or any(part in {"..", ""} for part in path.parts):
                 raise ValueError(f"Unsafe ZIP entry: {name}")
+            if path.parts[0].endswith(":"):
+                raise ValueError(f"Drive-qualified ZIP entry is not allowed: {name}")
             if mode & 0o170000 == 0o120000:
                 raise ValueError(f"Symlinks are not allowed in ZIP files: {name}")
-            target = (destination / Path(*path.parts)).resolve()
-            if destination.resolve() not in target.parents and target != destination.resolve():
+            target = (destination_resolved / Path(*path.parts)).resolve()
+            if destination_resolved not in target.parents and target != destination_resolved:
                 raise ValueError(f"ZIP entry escapes extraction directory: {name}")
             if info.is_dir():
                 target.mkdir(parents=True, exist_ok=True)
                 continue
             target.parent.mkdir(parents=True, exist_ok=True)
+            extracted = 0
             with zf.open(info) as src, target.open("wb") as dst:
-                shutil.copyfileobj(src, dst)
+                while True:
+                    chunk = src.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    extracted += len(chunk)
+                    actual_total += len(chunk)
+                    if extracted > info.file_size or actual_total > MAX_EXTRACTED:
+                        raise ValueError("ZIP expanded beyond its declared or allowed size.")
+                    dst.write(chunk)
+            if extracted != info.file_size:
+                raise zipfile.BadZipFile(f"Unexpected uncompressed size for {name}")
 
 
 def project_root() -> Path:
@@ -84,11 +117,17 @@ def project_root() -> Path:
 
 
 def detect(root: Path) -> str:
-    if any(root.glob("settings.gradle*")) or any(root.glob("build.gradle*")):
-        if any(root.rglob("AndroidManifest.xml")) or (root / "gradle.properties").exists():
-            return "android"
-        return "java"
-    if (root / "pom.xml").exists() or any(root.rglob("pom.xml")):
+    gradle_files = list(root.glob("*.gradle")) + list(root.glob("*.gradle.kts"))
+    is_android = any(root.rglob("AndroidManifest.xml"))
+    for build_file in gradle_files:
+        try:
+            if "com.android.application" in build_file.read_text(encoding="utf-8", errors="ignore") or "com.android.library" in build_file.read_text(encoding="utf-8", errors="ignore"):
+                is_android = True
+        except OSError:
+            pass
+    if is_android and (gradle_files or any(root.rglob("settings.gradle*"))):
+        return "android"
+    if gradle_files or any(root.glob("settings.gradle*")) or (root / "pom.xml").exists() or any(root.rglob("pom.xml")):
         return "java"
     if (root / "package.json").exists():
         return "node"
@@ -106,7 +145,7 @@ def copy_matches(root: Path, patterns: tuple[str, ...]) -> int:
     count = 0
     for pattern in patterns:
         for source in root.rglob(pattern):
-            if not source.is_file() or any(part in {"node_modules", ".git", ".gradle"} for part in source.parts):
+            if source.is_symlink() or not source.is_file() or any(part in {"node_modules", ".git", ".gradle"} for part in source.parts):
                 continue
             relative = source.relative_to(root)
             target = OUTPUT / relative
@@ -152,7 +191,7 @@ def build_node(root: Path) -> None:
     else:
         run(["npm", "install", "--no-audit", "--no-fund"], root)
     run(["npm", "run", "build", "--if-present"], root)
-    for folder in ("dist", "build", ".next/standalone"):
+    for folder in ("dist", "build", ".next/standalone", ".next/static"):
         source = root / folder
         if source.exists() and source.is_dir():
             target = OUTPUT / folder.replace("/", "_")
@@ -164,8 +203,9 @@ def build_python(root: Path) -> None:
     if (root / "pyproject.toml").exists():
         run([sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "build"], root)
         run([sys.executable, "-m", "build", "--outdir", str(OUTPUT)], root)
-    elif (root / "requirements.txt").exists():
-        run([sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "-r", "requirements.txt"], root)
+    else:
+        if (root / "requirements.txt").exists():
+            run([sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "-r", "requirements.txt"], root)
         shutil.make_archive(str(OUTPUT / "python-source"), "zip", root)
 
 
@@ -181,24 +221,17 @@ def main() -> int:
     OUTPUT.mkdir(parents=True)
 
     try:
-        url = validate_url(args.url)
         archive = WORK / "source.zip"
-        download_zip(url, archive)
+        download_zip(args.url, archive)
         if not zipfile.is_zipfile(archive):
             raise ValueError("The provided URL did not return a valid ZIP archive.")
         safe_extract(archive, SOURCE)
         root = project_root()
         project_type = detect(root) if args.type == "auto" else args.type
         print(f"Detected build type: {project_type}", flush=True)
-        builders = {
-            "android": build_android,
-            "java": build_java,
-            "node": build_node,
-            "python": build_python,
-        }
-        builders[project_type](root)
+        {"android": build_android, "java": build_java, "node": build_node, "python": build_python}[project_type](root)
         (OUTPUT / "BUILD_INFO.txt").write_text(
-            f"Build type: {project_type}\nSource archive: {urllib.parse.urlparse(url).path.rsplit('/', 1)[-1]}\n",
+            f"Build type: {project_type}\nSource archive: {urllib.parse.urlparse(args.url).path.rsplit('/', 1)[-1]}\n",
             encoding="utf-8",
         )
         if not any(OUTPUT.iterdir()):
