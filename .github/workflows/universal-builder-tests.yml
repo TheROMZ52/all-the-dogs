@@ -1,0 +1,35 @@
+name: Universal ZIP Builder Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "UniversalZipBuilder/scripts/**"
+      - "UniversalZipBuilder/tests/**"
+      - ".github/workflows/universal-builder-tests.yml"
+  pull_request:
+    paths:
+      - "UniversalZipBuilder/scripts/**"
+      - "UniversalZipBuilder/tests/**"
+      - ".github/workflows/universal-builder-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run builder tests
+        run: python -m unittest discover -s UniversalZipBuilder/tests -v
