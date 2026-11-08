@@ -1,0 +1,75 @@
+name: Universal ZIP Builder
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_url:
+        description: Direct HTTPS URL to the source ZIP (max 500 MiB)
+        required: true
+        type: string
+      project_type:
+        description: Project type
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - android
+          - java
+          - node
+          - python
+
+permissions:
+  contents: read
+
+concurrency:
+  group: universal-zip-builder-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Detect and build ZIP project
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout builder
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: ''
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip unzip
+          sudo apt-get install -y gradle maven
+
+      - name: Download, inspect, and build
+        env:
+          SOURCE_URL: ${{ inputs.source_url }}
+          PROJECT_TYPE: ${{ inputs.project_type }}
+        run: |
+          python UniversalZipBuilder/scripts/build.py --url "$SOURCE_URL" --type "$PROJECT_TYPE"
+
+      - name: Upload build output
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: universal-build-output
+          path: build-output/
+          if-no-files-found: error
+          retention-days: 7
