@@ -169,7 +169,7 @@ def prepare_android_sdk(root: Path) -> None:
             content = build_file.read_text(encoding="utf-8", errors="ignore")
         except OSError:
             continue
-        versions.update(re.findall(r"compileSdk(?:Version)?\\s*(?:=)?\\s*(\\d{2,3})", content))
+        versions.update(re.findall(r"compileSdk(?:Version)?\s*(?:=)?\s*(\d{2,3})", content))
     packages = ["platform-tools"]
     packages.extend(f"platforms;android-{version}" for version in sorted(versions, key=int))
     if len(packages) == 1:
