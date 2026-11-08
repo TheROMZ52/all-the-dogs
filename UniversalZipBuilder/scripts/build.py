@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import os
+import re
 import shutil
 import socket
 import subprocess
@@ -155,7 +156,29 @@ def copy_matches(root: Path, patterns: tuple[str, ...]) -> int:
     return count
 
 
+def prepare_android_sdk(root: Path) -> None:
+    sdkmanager = shutil.which("sdkmanager")
+    if not sdkmanager:
+        print("sdkmanager not found; relying on the runner's installed Android SDK.", flush=True)
+        return
+    versions = set()
+    for build_file in root.rglob("*.gradle*"):
+        if any(part in {"build", ".gradle", "node_modules"} for part in build_file.parts):
+            continue
+        try:
+            content = build_file.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        versions.update(re.findall(r"compileSdk(?:Version)?\\s*(?:=)?\\s*(\\d{2,3})", content))
+    packages = ["platform-tools"]
+    packages.extend(f"platforms;android-{version}" for version in sorted(versions, key=int))
+    if len(packages) == 1:
+        print("Could not infer compileSdk from Gradle files; Gradle will report any missing SDK platform.", flush=True)
+    run([sdkmanager, "--install", *packages], root)
+
+
 def build_android(root: Path) -> None:
+    prepare_android_sdk(root)
     wrapper = root / ("gradlew.bat" if os.name == "nt" else "gradlew")
     if wrapper.exists():
         if os.name != "nt":
