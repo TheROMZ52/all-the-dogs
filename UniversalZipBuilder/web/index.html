@@ -158,6 +158,7 @@ $("start").addEventListener("click", async () => {
   let parsed;
   try { parsed = new URL(source); } catch { return message("Enter a valid direct ZIP URL.","error"); }
   if (parsed.protocol !== "https:") return message("Only HTTPS source links are accepted.","error");
+  if (parsed.username || parsed.password || (parsed.port && parsed.port !== "443")) return message("Do not use URL credentials or non-standard HTTPS ports.","error");
   if (!parsed.hostname || parsed.hostname === "localhost" || parsed.hostname.endsWith(".local")) return message("This host is not allowed.","error");
   $("start").disabled = true;
   try {
