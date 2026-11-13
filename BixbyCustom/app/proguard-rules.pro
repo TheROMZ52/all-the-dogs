@@ -1,0 +1,1 @@
+-keep class com.theromz52.bixbycustom.** { *; }
