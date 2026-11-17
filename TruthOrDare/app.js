@@ -661,7 +661,7 @@ function installPWA() {
       }
       hadController = true;
     });
-    window.addEventListener("load", async () => {
+    (async () => {
       try {
         const registration = await navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" });
         registration.update().catch(() => {});
@@ -671,7 +671,7 @@ function installPWA() {
       } catch (_) {
         setSaveStatus("ذخیره فعال · نصب در دسترس نیست", "warn");
       }
-    });
+    })();
   }
   if (navigator.storage && typeof navigator.storage.persist === "function") navigator.storage.persist().catch(() => {});
 }
@@ -679,12 +679,12 @@ async function boot() {
   installEvents();
   setNetworkStatus();
   setSaveStatus("در حال بازیابی…", "warn");
+  installPWA();
   appState = await storage.load();
   used = new Set(appState.used);
   validateRestoredState();
   renderAll();
   persist();
-  installPWA();
 
   if (navigator.storage && typeof navigator.storage.estimate === "function") {
     navigator.storage.estimate().then(estimate => {
