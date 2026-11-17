@@ -286,6 +286,30 @@ function restoreGame(){
 renderPlayers();
 renderHistory();
 restoreGame();
+let deferredInstallPrompt=null;
+const installButton=$("installBtn");
+window.addEventListener("beforeinstallprompt",event=>{
+  event.preventDefault();
+  deferredInstallPrompt=event;
+  installButton.classList.remove("hidden");
+});
+window.addEventListener("appinstalled",()=>{
+  deferredInstallPrompt=null;
+  installButton.classList.add("hidden");
+  toast("بازی روی دستگاه نصب شد.");
+});
+installButton.addEventListener("click",async()=>{
+  if(!deferredInstallPrompt){
+    toast("از منوی مرورگر گزینه «افزودن به صفحه اصلی» رو انتخاب کن.");
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const choice=await deferredInstallPrompt.userChoice;
+  if(choice.outcome==="accepted")toast("درخواست نصب تأیید شد.");
+  deferredInstallPrompt=null;
+  installButton.classList.add("hidden");
+});
+
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{}));
 }
