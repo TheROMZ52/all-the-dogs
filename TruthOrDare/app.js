@@ -1,3 +1,4 @@
+import { StateStorage, normalizeState } from "./storage.js";
 const truths = [
 ["easy","fun","آخرین چیزی که باعث شد از ته دل بخندی چی بود؟"],
 ["easy","friends","اولین برداشتت از نفر سمت راستت چی بود؟"],
@@ -223,93 +224,480 @@ const extraTruths = [["easy","friends","بیشتر از همه چه چیزی ر�
 const extraDares = [["easy","fun","با صدای گوینده اخبار بگو الان در این جمع چه خبره."],["easy","friends","به یک نفر از جمع یک تعریف واقعی و محترمانه بکن."],["easy","fun","یک ویس کوتاه با صدای ربات بگو: سلام، روزت بخیر!"],["easy","creative","یک حیوان رو بدون حرف زدن تقلید کن تا بقیه حدس بزنن."],["easy","fun","۲۰ ثانیه مثل ربات راه برو."],["easy","fun","یک آهنگ رو فقط با زمزمه اجرا کن."],["easy","friends","برای نفر روبه‌روت یک لقب مثبت و بامزه بساز."],["easy","creative","با سه کلمه‌ای که جمع انتخاب می‌کنه یک داستان بساز."],["easy","fun","مثل گزارشگر فوتبال، باز شدن یک در رو گزارش کن."],["easy","school","یک درس رو مثل تبلیغ تلویزیونی معرفی کن."],["easy","fun","یک جمله ساده رو با سه احساس متفاوت بگو."],["easy","creative","یک شعر دوخطی درباره وسیله‌ای که نزدیکته بساز."],["easy","friends","یک خاطره خوب از جمع تعریف کن."],["easy","fun","تا نوبت بعدی با لحن یک شخصیت کارتونی حرف بزن."],["easy","social","از یکی از افراد جمع بابت یک کار خوبش تشکر کن."],["easy","fun","اسم پنج کشور رو در ده ثانیه بگو."],["easy","creative","یک شعار تبلیغاتی برای آب بساز."],["easy","fun","برای ۲۰ ثانیه وانمود کن روی ماه راه می‌ری."],["easy","friends","یک ویژگی مثبت از دو نفر کنارت بگو."],["easy","creative","یک اسم جدید برای این بازی اختراع کن."],["medium","fun","۳۰ ثانیه با لهجه ساختگی و محترمانه صحبت کن."],["medium","creative","در ۲۰ ثانیه یک تبلیغ خلاقانه برای خودکار بساز."],["medium","school","یک خاطره مدرسه رو مثل تریلر فیلم تعریف کن."],["medium","social","یک مهارت کوچک به جمع آموزش بده."],["medium","fun","یک شخصیت خیالی رو تقلید کن تا بقیه حدس بزنن."],["medium","friends","برای نفر سمت چپت یک معرفی افتخاری ۱۵ ثانیه‌ای انجام بده."],["medium","school","یک قانون خنده‌دار برای مدرسه پیشنهاد بده و ازش دفاع کن."],["medium","creative","داستانی بساز که کلمات گربه، فضا و پیتزا توش باشه."],["medium","friends","با اجازه همه یک عکس گروهی خلاقانه بگیرید؛ هرکس نخواست، فقط ژست بگیره."],["medium","social","یک جمله انگیزشی واقعی برای نفر روبه‌روت بگو."],["medium","fun","۱۵ ثانیه حرکت آهسته اجرا کن."],["medium","creative","یک وسیله انتخاب کن و وانمود کن اختراع قرن رو ساختی."],["medium","fun","یک تکه از آهنگ مورد علاقه‌ات رو اجرا کن."],["medium","creative","در ۳۰ ثانیه یک شخصیت خیالی با اسم و قدرت ویژه بساز."],["medium","social","یک پیام مثبت کوتاه برای آینده خودت با صدای بلند بگو."],["medium","creative","یک معمای ساده طراحی کن و از جمع بپرس."],["medium","fun","یک اجرای دوبله برای صحنه‌ای خیالی انجام بده."],["medium","friends","از هر نفر یک کلمه بگیر و با همه‌شون یک جمله بساز."],["medium","fun","یک سخنرانی انتخاباتی برای رئیس شدن در این جمع انجام بده."],["medium","creative","یک اسم برای سیاره خیالی و سه قانونش بساز."],["medium","fun","یک دقیقه فقط با سؤال جواب بده."],["medium","friends","از جمع بخواه یک حرکت گروهی ساده انتخاب کنن و با هم انجام بدید."],["medium","school","یک موضوع دلخواه رو مثل معلم‌ها درس بده."],["medium","social","یک تعریف صادقانه از خودت بکن."],["medium","creative","یک کارت دعوت خیالی برای سفر به نفر روبه‌روت ارائه کن."],["medium","fun","یک جمله سخت رو سه بار سریع و درست بگو."],["medium","social","یک نکته مثبت که از این جمع یاد گرفتی بیان کن."],["medium","fun","نقش فروشنده‌ای رو بازی کن که می‌خواد یک سنگ معمولی بفروشه."],["easy","fun","۱۰ ثانیه ادای راه رفتن یک اردک رو دربیار."],["medium","creative","یک اسم و داستان کوتاه برای یک ابرقهرمان بساز."],["medium","school","یک زنگ تفریح ایده‌آل رو در ۲۰ ثانیه توصیف کن."],["bold","fun","۳۰ ثانیه گزارشگر مسابقه‌ای باش که هیچ اتفاقی توش نمی‌افته."],["bold","creative","با سه شیء اطرافت یک داستان ماجراجویی بساز."],["bold","friends","از یکی از افراد جمع بخواه یک سؤال بامزه بپرسه و فوری جواب بده."],["bold","social","یک هدف کوتاه‌مدتت رو اعلام کن و اولین قدمش رو بگو."],["bold","creative","در ۲۰ ثانیه یک بازی جدید با قوانین ساده اختراع کن."],["bold","fun","نقش فروشنده‌ای رو بازی کن که می‌خواد یک محصول کاملاً خیالی بفروشه."],["bold","friends","برای کل جمع یک اسم تیمی و شعار بساز."],["bold","fun","یک داستان عادی رو طوری تعریف کن انگار اتفاقی تاریخی بوده."],["bold","creative","یک اپلیکیشن عجیب معرفی کن و کاربردش رو توضیح بده."],["bold","social","یک عادت خوب که می‌خوای از فردا شروع کنی اعلام کن."]];
 truths.push(...extraTruths);
 dares.push(...extraDares);
-const labels={fun:"خنده‌دار",friends:"دوستانه",school:"مدرسه و خاطره",creative:"خلاقانه",social:"اجتماعی"};
-const STORAGE_KEY="tod_state_v2";
-let restored={};
-try{restored=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")||{}}catch(e){}
-let legacyPlayers=[];
-try{legacyPlayers=JSON.parse(localStorage.getItem("tod_players")||"[]")}catch(e){}
-let players=Array.isArray(restored.players)?restored.players:(Array.isArray(legacyPlayers)?legacyPlayers:[]);
-let round=Number.isFinite(Number(restored.round))?Number(restored.round):0;
-let asker=typeof restored.asker==="string"?restored.asker:"";
-let answerer=typeof restored.answerer==="string"?restored.answerer:"";
-let kind=restored.kind==="truth"||restored.kind==="dare"?restored.kind:"";
-let current=Array.isArray(restored.current)?restored.current:null;
-let used=new Set(Array.isArray(restored.used)?restored.used:[]);
-let history=Array.isArray(restored.history)?restored.history.slice(0,12):[];
-let stage=["idle","choose","prompt","next"].includes(restored.stage)?restored.stage:"idle";
-const $=id=>document.getElementById(id);
-const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify({players,round,asker,answerer,kind,current,used:[...used],history,stage,level:$("level").value,category:$("category").value}));}catch(e){toast("ذخیره‌سازی مرورگر در دسترس نیست.");}};
-function toast(s){$("toast").textContent=s;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2100)}
-function renderPlayers(){$("players").innerHTML="";players.forEach((n,i)=>{const chip=document.createElement("span");chip.className="player";const t=document.createElement("span");t.textContent=n;const b=document.createElement("button");b.type="button";b.textContent="×";b.setAttribute("aria-label","حذف "+n);b.onclick=()=>{players.splice(i,1);save();renderPlayers()};chip.append(t,b);$("players").append(chip)});$("count").textContent=players.length+" بازیکن";$("startBtn").disabled=players.length<2;$("startBtn").style.opacity=players.length<2?".55":"1"}
-$("addForm").addEventListener("submit",e=>{e.preventDefault();const n=$("nameInput").value.trim().replace(/\s+/g," ");if(!n)return;if(players.some(x=>x.toLocaleLowerCase()===n.toLocaleLowerCase()))return toast("این اسم قبلاً اضافه شده.");players.push(n);save();$("nameInput").value="";renderPlayers();$("nameInput").focus()});
-function pickPair(){const a=[...players].sort(()=>Math.random()-.5);asker=a[0];answerer=a[1];if(players.length>2&&history.length){let tries=0;while(history.length&&history[history.length-1].asker===asker&&history[history.length-1].answerer===answerer&&tries++<12){const b=[...players].sort(()=>Math.random()-.5);asker=b[0];answerer=b[1]}}}
-function start(){if(players.length<2)return toast("حداقل دو بازیکن اضافه کن.");round++;pickPair();stage="choose";current=null;$("empty").classList.add("hidden");$("active").classList.remove("hidden");$("asker").textContent=asker;$("answerer").textContent=answerer;$("answererName").textContent=answerer;$("round").textContent="دور "+round;$("choose").classList.remove("hidden");$("promptBox").classList.add("hidden");$("nextBtn").classList.add("hidden");current=null;save()}
-function getPrompt(type){const level=$("level").value,cat=$("category").value;let pool=(type==="truth"?truths:dares).filter(x=>(level==="all"||x[0]===level)&&(cat==="all"||x[1]===cat));let fresh=pool.filter(x=>!used.has(type+"|"+x[2]));if(!fresh.length){pool.forEach(x=>used.delete(type+"|"+x[2]));fresh=pool}if(!fresh.length)return null;const p=fresh[Math.floor(Math.random()*fresh.length)];used.add(type+"|"+p[2]);return p}
-function showPrompt(type){kind=type;current=getPrompt(type);if(!current)return toast("برای این فیلتر موردی پیدا نشد.");$("choose").classList.add("hidden");$("promptBox").classList.remove("hidden");$("nextBtn").classList.add("hidden");$("promptKind").textContent=(type==="truth"?"حقیقت":"جرئت")+" · "+labels[current[1]]+" · "+(current[0]==="easy"?"آسان":current[0]==="medium"?"متوسط":"جسورانه");$("promptText").textContent=current[2];stage="prompt";save()}
-$("truthBtn").onclick=()=>showPrompt("truth");$("dareBtn").onclick=()=>showPrompt("dare");$("anotherBtn").onclick=()=>showPrompt(kind);
-function finish(){if(!current)return;history.unshift({asker,answerer,kind,text:current[2]});history=history.slice(0,12);renderHistory();$("promptBox").classList.add("hidden");$("nextBtn").classList.remove("hidden");stage="next";save()}
-$("doneBtn").onclick=finish;$("nextBtn").onclick=start;$("startBtn").onclick=()=>{round=0;history=[];used.clear();renderHistory();start()};
-function renderHistory(){$("history").innerHTML="";if(!history.length){$("history").innerHTML='<div class="sub">هنوز دوری ثبت نشده.</div>';return}history.forEach((h,i)=>{const d=document.createElement("div");d.className="history-item";const left=document.createElement("span");const strong=document.createElement("strong");strong.textContent=h.answerer;left.append(strong,document.createTextNode(" · "+(h.kind==="truth"?"حقیقت":"جرئت")));const right=document.createElement("span");right.textContent=h.asker+" پرسید";d.append(left,right);$("history").append(d)})}
-$("clearHistory").onclick=()=>{history=[];round=0;renderHistory();save();toast("تاریخچه پاک شد.")};
-$("level").value=restored.level||"all";
-$("category").value=restored.category||"all";
-$("level").addEventListener("change",save);
-$("category").addEventListener("change",save);
-function restoreGame(){
-  const validPair=asker&&answerer&&asker!==answerer;
-  if(!validPair||!["choose","prompt","next"].includes(stage)){
-    stage="idle";
-    $("empty").classList.remove("hidden");
-    $("active").classList.add("hidden");
-    return;
-  }
-  $("empty").classList.add("hidden");
-  $("active").classList.remove("hidden");
-  $("asker").textContent=asker;
-  $("answerer").textContent=answerer;
-  $("answererName").textContent=answerer;
-  $("round").textContent="دور "+round;
-  $("choose").classList.toggle("hidden",stage!=="choose");
-  $("promptBox").classList.toggle("hidden",stage!=="prompt");
-  $("nextBtn").classList.toggle("hidden",stage!=="next");
-  if(stage==="prompt"&&current&&current[2]){
-    $("promptKind").textContent=(kind==="truth"?"حقیقت":"جرئت")+" · "+labels[current[1]]+" · "+(current[0]==="easy"?"آسان":current[0]==="medium"?"متوسط":"جسورانه");
-    $("promptText").textContent=current[2];
-  }else if(stage==="prompt"){
-    stage="choose";
-    $("choose").classList.remove("hidden");
-    $("promptBox").classList.add("hidden");
-  }
-  save();
-}
-renderPlayers();
-renderHistory();
-restoreGame();
-let deferredInstallPrompt=null;
-const installButton=$("installBtn");
-window.addEventListener("beforeinstallprompt",event=>{
-  event.preventDefault();
-  deferredInstallPrompt=event;
-  installButton.classList.remove("hidden");
-});
-window.addEventListener("appinstalled",()=>{
-  deferredInstallPrompt=null;
-  installButton.classList.add("hidden");
-  toast("بازی روی دستگاه نصب شد.");
-});
-installButton.addEventListener("click",async()=>{
-  if(!deferredInstallPrompt){
-    toast("از منوی مرورگر گزینه «افزودن به صفحه اصلی» رو انتخاب کن.");
-    return;
-  }
-  deferredInstallPrompt.prompt();
-  const choice=await deferredInstallPrompt.userChoice;
-  if(choice.outcome==="accepted")toast("درخواست نصب تأیید شد.");
-  deferredInstallPrompt=null;
-  installButton.classList.add("hidden");
-});
 
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{}));
+const labels = { fun: "خنده‌دار", friends: "دوستانه", school: "مدرسه و خاطره", creative: "خلاقانه", social: "اجتماعی" };
+const levelLabels = { easy: "آسان", medium: "متوسط", bold: "جسورانه" };
+const storage = new StateStorage();
+const $ = id => document.getElementById(id);
+let appState = normalizeState({});
+let used = new Set();
+let saveTimer = 0;
+let pendingSnapshot = null;
+let toastTimer = 0;
+let channel = null;
+let deferredInstallPrompt = null;
+
+function toast(message, type = "normal") {
+  const node = $("toast");
+  node.textContent = message;
+  node.dataset.type = type;
+  node.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => node.classList.remove("show"), 2600);
 }
+function setSaveStatus(message, mode = "ok") {
+  const node = $("saveStatus");
+  if (!node) return;
+  node.textContent = message;
+  node.dataset.mode = mode;
+}
+function snapshotState() {
+  return normalizeState({
+    ...appState,
+    used: [...used],
+    filters: { level: $("level").value, category: $("category").value }
+  });
+}
+function persist() {
+  const snapshot = snapshotState();
+  snapshot.savedAt = Date.now();
+  appState.savedAt = snapshot.savedAt;
+  pendingSnapshot = snapshot;
+  const backupOk = storage.writeBackup(snapshot);
+  setSaveStatus(backupOk ? "ذخیره شد" : "ذخیره پشتیبان ناموفق", backupOk ? "ok" : "error");
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    const currentSnapshot = pendingSnapshot;
+    try {
+      const primaryOk = await storage.writePrimary(currentSnapshot);
+      if (primaryOk) setSaveStatus("ذخیره دوگانه فعال", "ok");
+      else if (backupOk) setSaveStatus("ذخیره محلی فعال", "warn");
+    } catch (_) {
+      setSaveStatus(backupOk ? "پشتیبان محلی فعال" : "خطای ذخیره‌سازی", backupOk ? "warn" : "error");
+    }
+  }, 220);
+  if (channel) {
+    try { channel.postMessage({ type: "state", state: snapshot }); } catch (_) {}
+  }
+}
+function flushSave() {
+  const snapshot = snapshotState();
+  snapshot.savedAt = Date.now();
+  appState.savedAt = snapshot.savedAt;
+  pendingSnapshot = snapshot;
+  const backupOk = storage.writeBackup(snapshot);
+  if (!backupOk) setSaveStatus("ذخیره محلی ناموفق", "error");
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = 0;
+  storage.writePrimary(snapshot).then(ok => {
+    if (ok) setSaveStatus("ذخیره دوگانه فعال", "ok");
+  }).catch(() => {
+    setSaveStatus(backupOk ? "پشتیبان محلی فعال" : "خطای ذخیره‌سازی", backupOk ? "warn" : "error");
+  });
+}
+function secureRandomInt(max) {
+  if (max <= 1) return 0;
+  if (globalThis.crypto && typeof crypto.getRandomValues === "function") {
+    const range = 0x100000000;
+    const limit = Math.floor(range / max) * max;
+    const value = new Uint32Array(1);
+    do { crypto.getRandomValues(value); } while (value[0] >= limit);
+    return value[0] % max;
+  }
+  return Math.floor(Math.random() * max);
+}
+function normalizeName(value) {
+  return String(value || "").normalize("NFKC").replace(/[\u0000-\u001f\u007f]/g, "").trim().replace(/\s+/g, " ").slice(0, 24);
+}
+function renderPlayers() {
+  const container = $("players");
+  container.replaceChildren();
+  appState.players.forEach((name, index) => {
+    const chip = document.createElement("span");
+    chip.className = "player";
+    const label = document.createElement("span");
+    label.textContent = name;
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "×";
+    remove.title = "حذف " + name;
+    remove.setAttribute("aria-label", "حذف " + name);
+    remove.addEventListener("click", () => removePlayer(index));
+    chip.append(label, remove);
+    container.append(chip);
+  });
+  $("count").textContent = appState.players.length.toLocaleString("fa-IR") + " بازیکن";
+  $("startBtn").disabled = appState.players.length < 2;
+  $("startBtn").setAttribute("aria-disabled", appState.players.length < 2 ? "true" : "false");
+}
+function removePlayer(index) {
+  const removed = appState.players[index];
+  if (!removed) return;
+  appState.players.splice(index, 1);
+  if (appState.asker === removed || appState.answerer === removed) {
+    appState.stage = "idle";
+    appState.asker = "";
+    appState.answerer = "";
+    appState.kind = "";
+    appState.current = null;
+    toast("یکی از نفرات دور حذف شد؛ دور فعلی بسته شد.", "warn");
+  }
+  renderAll();
+  persist();
+}
+function renderHistory() {
+  const container = $("history");
+  container.replaceChildren();
+  if (!appState.history.length) {
+    const empty = document.createElement("div");
+    empty.className = "sub history-empty";
+    empty.textContent = "هنوز دوری ثبت نشده.";
+    container.append(empty);
+    return;
+  }
+  appState.history.slice(0, 24).forEach(item => {
+    const row = document.createElement("article");
+    row.className = "history-item" + (item.skipped ? " is-skipped" : "");
+    const main = document.createElement("div");
+    main.className = "history-main";
+    const title = document.createElement("strong");
+    title.textContent = item.answerer + " · " + (item.kind === "truth" ? "حقیقت" : "جرئت");
+    const detail = document.createElement("span");
+    detail.className = "history-question";
+    detail.textContent = item.text;
+    const meta = document.createElement("small");
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleString("fa-IR", { dateStyle: "short", timeStyle: "short" }) : "زمان نامشخص";
+    meta.textContent = "پرسشگر: " + item.asker + " · دور " + item.round + " · " + date + (item.skipped ? " · رد شد" : "");
+    main.append(title, detail, meta);
+    row.append(main);
+    container.append(row);
+  });
+}
+function promptIdentity(type, prompt) {
+  return type + "|" + prompt[0] + "|" + prompt[1] + "|" + prompt[2];
+}
+function getPrompt(type) {
+  const level = $("level").value;
+  const category = $("category").value;
+  const source = type === "truth" ? truths : dares;
+  const pool = source.filter(item => (level === "all" || item[0] === level) && (category === "all" || item[1] === category));
+  if (!pool.length) {
+    toast("برای این ترکیب فیلتر، موردی وجود نداره.", "warn");
+    return null;
+  }
+  let fresh = pool.filter(item => !used.has(promptIdentity(type, item)));
+  if (!fresh.length) {
+    pool.forEach(item => used.delete(promptIdentity(type, item)));
+    fresh = pool;
+    toast("همه موارد این فیلتر استفاده شدند؛ چرخه از نو شروع شد.");
+  }
+  const selected = fresh[secureRandomInt(fresh.length)];
+  used.add(promptIdentity(type, selected));
+  return selected;
+}
+function renderGame() {
+  const active = appState.stage !== "idle";
+  $("empty").classList.toggle("hidden", active);
+  $("active").classList.toggle("hidden", !active);
+  $("round").textContent = appState.round > 0 ? "دور " + appState.round.toLocaleString("fa-IR") : "هنوز شروع نشده";
+  if (!active) return;
+  $("asker").textContent = appState.asker;
+  $("answerer").textContent = appState.answerer;
+  $("answererName").textContent = appState.answerer;
+  $("choose").classList.toggle("hidden", appState.stage !== "choose");
+  $("promptBox").classList.toggle("hidden", appState.stage !== "prompt");
+  $("nextBtn").classList.toggle("hidden", appState.stage !== "next");
+  if (appState.current && (appState.stage === "prompt" || appState.stage === "next")) {
+    const item = appState.current;
+    $("promptKind").textContent = (appState.kind === "truth" ? "حقیقت" : "جرئت") + " · " + (labels[item[1]] || "عمومی") + " · " + (levelLabels[item[0]] || "معمولی");
+    $("promptText").textContent = item[2];
+  }
+}
+function renderAll() {
+  $("level").value = appState.filters.level;
+  $("category").value = appState.filters.category;
+  renderPlayers();
+  renderHistory();
+  renderGame();
+}
+function validateRestoredState() {
+  const validPair = appState.asker && appState.answerer && appState.asker !== appState.answerer &&
+    appState.players.includes(appState.asker) && appState.players.includes(appState.answerer);
+  if (appState.stage !== "idle" && !validPair) {
+    appState.stage = "idle";
+    appState.asker = "";
+    appState.answerer = "";
+    appState.current = null;
+    appState.kind = "";
+  }
+  if (appState.stage === "prompt" && (!appState.current || !appState.current[2] || !appState.kind)) {
+    appState.stage = "choose";
+    appState.current = null;
+    appState.kind = "";
+  }
+  if (appState.stage === "next" && (!appState.current || !appState.current[2])) {
+    appState.stage = "choose";
+    appState.current = null;
+    appState.kind = "";
+  }
+}
+function choosePair() {
+  const pairs = [];
+  for (let i = 0; i < appState.players.length; i++) {
+    for (let j = 0; j < appState.players.length; j++) {
+      if (i !== j) pairs.push([appState.players[i], appState.players[j]]);
+    }
+  }
+  if (!pairs.length) return null;
+  const previous = appState.history[0];
+  const candidates = previous ? pairs.filter(pair => pair[0] !== previous.asker || pair[1] !== previous.answerer) : pairs;
+  const pool = candidates.length ? candidates : pairs;
+  return pool[secureRandomInt(pool.length)];
+}
+function startRound() {
+  if (appState.players.length < 2) {
+    toast("برای شروع حداقل دو بازیکن اضافه کن.", "warn");
+    return;
+  }
+  const pair = choosePair();
+  if (!pair) return;
+  appState.round += 1;
+  appState.asker = pair[0];
+  appState.answerer = pair[1];
+  appState.kind = "";
+  appState.current = null;
+  appState.stage = "choose";
+  renderGame();
+  persist();
+}
+function startNewSession() {
+  if (appState.players.length < 2) {
+    toast("برای شروع حداقل دو بازیکن اضافه کن.", "warn");
+    return;
+  }
+  if ((appState.round > 0 || appState.history.length) && !confirm("بازی تازه شروع بشه؟ تاریخچه و چرخه سؤال‌های استفاده‌شده پاک می‌شن.")) return;
+  appState.round = 0;
+  appState.history = [];
+  used.clear();
+  appState.stage = "idle";
+  appState.asker = "";
+  appState.answerer = "";
+  appState.kind = "";
+  appState.current = null;
+  startRound();
+  renderHistory();
+}
+function showPrompt(type) {
+  if (appState.stage !== "choose" && appState.stage !== "prompt") return;
+  const selected = getPrompt(type);
+  if (!selected) return;
+  appState.kind = type;
+  appState.current = [...selected];
+  appState.stage = "prompt";
+  renderGame();
+  persist();
+}
+function finishTurn(skipped = false) {
+  if (appState.stage !== "prompt" || !appState.current) return;
+  appState.history.unshift({
+    asker: appState.asker,
+    answerer: appState.answerer,
+    kind: appState.kind,
+    text: appState.current[2],
+    skipped,
+    round: appState.round,
+    createdAt: Date.now()
+  });
+  appState.history = appState.history.slice(0, 100);
+  appState.stage = "next";
+  renderHistory();
+  renderGame();
+  persist();
+}
+function clearHistory() {
+  if (!appState.history.length) return;
+  if (!confirm("همه تاریخچه دورها پاک بشه؟")) return;
+  appState.history = [];
+  renderHistory();
+  persist();
+  toast("تاریخچه پاک شد.");
+}
+function updateFilters() {
+  appState.filters = { level: $("level").value, category: $("category").value };
+  persist();
+}
+function exportBackup() {
+  const payload = { application: "truth-or-dare", formatVersion: 3, exportedAt: new Date().toISOString(), state: snapshotState() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "truth-or-dare-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  toast("فایل پشتیبان آماده شد.");
+}
+async function importBackup(file) {
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    toast("حجم فایل پشتیبان بیش از حد مجازه.", "error");
+    return;
+  }
+  try {
+    const parsed = JSON.parse(await file.text());
+    const raw = parsed && parsed.state ? parsed.state : parsed;
+    if (!raw || !Array.isArray(raw.players)) throw new Error("Invalid backup format");
+    const imported = normalizeState(raw);
+    if (!confirm("اطلاعات فعلی با پشتیبان جایگزین بشه؟")) return;
+    appState = imported;
+    used = new Set(imported.used);
+    validateRestoredState();
+    renderAll();
+    persist();
+    toast("پشتیبان با موفقیت بازیابی شد.");
+  } catch (_) {
+    toast("فایل پشتیبان معتبر نیست یا قابل خواندن نیست.", "error");
+  } finally {
+    $("importFile").value = "";
+  }
+}
+function setNetworkStatus() {
+  const online = navigator.onLine;
+  const node = $("networkStatus");
+  node.textContent = online ? "آنلاین" : "آفلاین";
+  node.classList.toggle("online", online);
+  node.classList.toggle("offline", !online);
+}
+function applyRemoteState(raw) {
+  const remote = normalizeState(raw);
+  if (!remote.savedAt || remote.savedAt <= appState.savedAt) return;
+  appState = remote;
+  used = new Set(remote.used);
+  validateRestoredState();
+  renderAll();
+  setSaveStatus("همگام شد", "ok");
+}
+function installEvents() {
+  $("addForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const name = normalizeName($("nameInput").value);
+    if (!name) return;
+    const key = name.normalize("NFKC").toLocaleLowerCase();
+    if (appState.players.some(item => item.normalize("NFKC").toLocaleLowerCase() === key)) {
+      toast("این اسم قبلاً اضافه شده.", "warn");
+      return;
+    }
+    if (appState.players.length >= 40) {
+      toast("حداکثر ۴۰ بازیکن می‌تونی اضافه کنی.", "warn");
+      return;
+    }
+    appState.players.push(name);
+    $("nameInput").value = "";
+    renderPlayers();
+    persist();
+    $("nameInput").focus();
+  });
+  $("startBtn").addEventListener("click", startNewSession);
+  $("truthBtn").addEventListener("click", () => showPrompt("truth"));
+  $("dareBtn").addEventListener("click", () => showPrompt("dare"));
+  $("anotherBtn").addEventListener("click", () => showPrompt(appState.kind));
+  $("doneBtn").addEventListener("click", () => finishTurn(false));
+  $("skipBtn").addEventListener("click", () => finishTurn(true));
+  $("nextBtn").addEventListener("click", startRound);
+  $("clearHistory").addEventListener("click", clearHistory);
+  $("level").addEventListener("change", updateFilters);
+  $("category").addEventListener("change", updateFilters);
+  $("exportBtn").addEventListener("click", exportBackup);
+  $("importBtn").addEventListener("click", () => $("importFile").click());
+  $("importFile").addEventListener("change", event => importBackup(event.target.files && event.target.files[0]));
+  window.addEventListener("online", setNetworkStatus);
+  window.addEventListener("offline", setNetworkStatus);
+  window.addEventListener("pagehide", flushSave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushSave();
+  });
+  window.addEventListener("storage", event => {
+    if (event.key !== "tod_backup_v3" || !event.newValue) return;
+    try { applyRemoteState(JSON.parse(event.newValue)); } catch (_) {}
+  });
+  if ("BroadcastChannel" in window) {
+    channel = new BroadcastChannel("tod-state-sync-v3");
+    channel.addEventListener("message", event => {
+      if (event.data && event.data.type === "state") applyRemoteState(event.data.state);
+    });
+  }
+}
+function installPWA() {
+  const installButton = $("installBtn");
+  window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    installButton.classList.remove("hidden");
+  });
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    installButton.classList.add("hidden");
+    toast("بازی روی دستگاه نصب شد.");
+  });
+  installButton.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) {
+      toast("از منوی مرورگر گزینه «افزودن به صفحه اصلی» رو انتخاب کن.");
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    if (choice.outcome === "accepted") toast("درخواست نصب تأیید شد.");
+    deferredInstallPrompt = null;
+    installButton.classList.add("hidden");
+  });
+  if ("serviceWorker" in navigator) {
+    let hadController = Boolean(navigator.serviceWorker.controller);
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (hadController && !window.__todReloading) {
+        window.__todReloading = true;
+        location.reload();
+      }
+      hadController = true;
+    });
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" });
+        registration.update().catch(() => {});
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") registration.update().catch(() => {});
+        });
+      } catch (_) {
+        setSaveStatus("ذخیره فعال · نصب در دسترس نیست", "warn");
+      }
+    });
+  }
+  if (navigator.storage && typeof navigator.storage.persist === "function") navigator.storage.persist().catch(() => {});
+}
+async function boot() {
+  installEvents();
+  setNetworkStatus();
+  setSaveStatus("در حال بازیابی…", "warn");
+  appState = await storage.load();
+  used = new Set(appState.used);
+  validateRestoredState();
+  renderAll();
+  persist();
+  installPWA();
+
+  if (navigator.storage && typeof navigator.storage.estimate === "function") {
+    navigator.storage.estimate().then(estimate => {
+      if (estimate && estimate.quota && estimate.usage / estimate.quota > 0.85) {
+        toast("فضای ذخیره‌سازی مرورگر رو به پر شدنه؛ از پشتیبان خروجی بگیر.", "warn");
+      }
+    }).catch(() => {});
+  }
+}
+boot().catch(() => {
+  appState = normalizeState({});
+  renderAll();
+  setSaveStatus("ذخیره‌سازی محدود", "error");
+  toast("بازی اجرا شد، اما بازیابی اطلاعات قبلی ممکن نبود.", "error");
+  installPWA();
+});
