@@ -1,9 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#fb83b8"/></linearGradient></defs>
-<rect width="512" height="512" rx="116" fill="#171329"/>
-<rect x="42" y="42" width="428" height="428" rx="100" fill="url(#g)"/>
-<path d="M256 108c-79 0-132 50-132 119 0 48 28 82 75 100v46h114v-46c47-18 75-52 75-100 0-69-53-119-132-119z" fill="#211a36"/>
-<path d="M221 202c0-22 15-37 37-37s37 15 37 37-15 35-37 49c-22-14-37-27-37-49z" fill="#fb83b8"/>
-<path d="M213 388h86M224 420h64" stroke="#211a36" stroke-width="18" stroke-linecap="round"/>
-<circle cx="174" cy="285" r="12" fill="#7ce7c2"/><circle cx="338" cy="285" r="12" fill="#7ce7c2"/>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b49aff"/><stop offset="1" stop-color="#ff91c2"/></linearGradient>
+<linearGradient id="card" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#30254f"/><stop offset="1" stop-color="#171326"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="116" fill="#100d1e"/>
+<rect x="38" y="38" width="436" height="436" rx="105" fill="url(#bg)"/>
+<rect x="91" y="91" width="330" height="330" rx="82" fill="url(#card)" stroke="#fff" stroke-opacity=".22" stroke-width="5"/>
+<path d="M192 197c0-35 27-61 64-61s64 26 64 61c0 26-13 43-39 61-12 8-18 19-18 31h-17c0-20 9-34 27-47 19-14 28-25 28-45 0-25-18-43-45-43s-45 18-45 43z" fill="#b49aff"/>
+<circle cx="256" cy="337" r="12" fill="#83eac8"/>
+<path d="M168 383c-19-20-29-44-29-72 0-11 1-21 4-31l35 11c-2 7-3 14-3 21 0 19 7 35 20 49z" fill="#ff91c2"/>
+<path d="M344 383c19-20 29-44 29-72 0-11-1-21-4-31l-35 11c2 7 3 14 3 21 0 19-7 35-20 49z" fill="#83eac8"/>
 </svg>
