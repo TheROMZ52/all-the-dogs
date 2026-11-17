@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#171329">
+<meta name="color-scheme" content="dark">
+<meta name="application-name" content="جرئت یا حقیقت">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,13 +17,23 @@
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="brand"><div class="logo">؟</div><div><strong>جرئت یا حقیقت</strong><small>بازی دورهمی شما</small></div></div><div class="top-actions"><button id="installBtn" class="btn soft hidden" type="button">نصب برنامه</button><div class="pill">نسخه مستقل · بدون نیاز به ثبت‌نام</div></div></header>
+<header class="top"><div class="brand"><div class="logo">؟</div><div><strong>جرئت یا حقیقت</strong><small>بازی دورهمی شما</small></div></div><div class="top-actions">
+  <span id="saveStatus" class="save-status" role="status" aria-live="polite">در حال بازیابی اطلاعات…</span>
+  <span id="networkStatus" class="network-status online">آنلاین</span>
+  <button id="installBtn" class="btn soft hidden" type="button">نصب برنامه</button>
+</div></header>
 <section class="hero"><div class="eyebrow">● وقتشه یکم هیجان بسازیم</div><h1>جرئت یا <span>حقیقت؟</span></h1><p>اسم‌ها رو وارد کن، گردونه آدم‌ها رو انتخاب می‌کنه و جواب‌دهنده تصمیم می‌گیره با حقیقت روبه‌رو بشه یا جرئت!</p></section>
 <main class="layout">
 <section class="panel">
 <h2>بازیکن‌ها</h2><p class="sub">اسم همه افرادی که قراره بازی کنن رو اضافه کن.</p>
 <form id="addForm" class="addrow"><input id="nameInput" class="input" maxlength="24" placeholder="مثلاً مهبد" aria-label="نام بازیکن" autocomplete="off"><button class="btn primary" type="submit">افزودن</button></form>
-<div id="players" class="players" aria-live="polite"></div><div id="count" class="count">۰ بازیکن</div>
+<div id="players" class="players" aria-live="polite"></div>
+<div class="players-footer"><div id="count" class="count">۰ بازیکن</div><span class="helper-note">ذخیره خودکار و محلی</span></div>
+<div class="data-tools" aria-label="مدیریت اطلاعات بازی">
+  <button id="exportBtn" class="btn soft tool-btn" type="button">خروجی پشتیبان</button>
+  <button id="importBtn" class="btn soft tool-btn" type="button">بازیابی پشتیبان</button>
+  <input id="importFile" type="file" accept="application/json,.json" hidden>
+</div>
 <div class="settings">
 <label>سطح هیجان<select id="level" class="input"><option value="all">همه سطح‌ها</option><option value="easy">آسان و دوستانه</option><option value="medium">متوسط</option><option value="bold">جسورانه ولی امن</option></select></label>
 <label>دسته‌بندی<select id="category" class="input"><option value="all">همه موضوع‌ها</option><option value="fun">خنده‌دار</option><option value="friends">دوستانه</option><option value="school">مدرسه و خاطره</option><option value="creative">خلاقانه</option><option value="social">اجتماعی</option></select></label>
@@ -35,13 +47,17 @@
 <div id="active" class="hidden">
 <div class="pair"><div class="person asker"><small>پرسشگر</small><strong id="asker">—</strong></div><div class="person answerer"><small>جواب‌دهنده</small><strong id="answerer">—</strong></div></div>
 <div id="choose" class="choose"><p>نوبت <span id="answererName"></span>ـه؛ انتخاب کن!</p><div class="choices"><button id="truthBtn" class="btn primary choice">حقیقت</button><button id="dareBtn" class="btn pink choice">جرئت</button></div></div>
-<div id="promptBox" class="prompt hidden" aria-live="polite"><div id="promptKind" class="kind"></div><p id="promptText"></p><div class="prompt-actions"><button id="anotherBtn" class="btn soft">یکی دیگه</button><button id="doneBtn" class="btn mint">انجام شد ✓</button></div></div>
+<div id="promptBox" class="prompt hidden" aria-live="polite"><div id="promptKind" class="kind"></div><p id="promptText"></p><div class="prompt-actions">
+  <button id="anotherBtn" class="btn soft" type="button">یکی دیگه</button>
+  <button id="skipBtn" class="btn soft skip-btn" type="button">رد کردن</button>
+  <button id="doneBtn" class="btn mint" type="button">انجام شد ✓</button>
+</div></div>
 <button id="nextBtn" class="btn primary next hidden">نوبت بعدی ←</button>
 </div>
 </section>
 </main>
 <section class="panel history"><div class="history-head"><div><h2>تاریخچه دورها</h2><p class="sub" style="margin:4px 0 0">آخرین انتخاب‌ها و چالش‌ها</p></div><button id="clearHistory" class="btn soft" style="min-height:38px;padding:7px 11px;font-size:11px">پاک کردن</button></div><div id="history" class="history-list"><div class="sub">هنوز دوری ثبت نشده.</div></div></section>
-<footer class="foot">برای خوش‌گذرونی ساخته شده؛ هر بازیکن می‌تونه هر چالشی رو بدون توضیح رد کنه.</footer>
+<footer class="foot">برای خوش‌گذرونی ساخته شده؛ هر بازیکن می‌تونه هر چالشی رو بدون توضیح رد کنه. اطلاعات بازی روی همین دستگاه می‌مونه.</footer>
 </div><div id="toast" class="toast" role="status"></div>
-<script src="./app.js" defer></script>
+<script type="module" src="./app.js"></script>
 </body></html>
