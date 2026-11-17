@@ -7,8 +7,9 @@ self.addEventListener("install", event => {
     const cache = await caches.open(CACHE_NAME);
     await Promise.all(APP_FILES.map(async path => {
       try {
-        const response = await fetch(path, { cache: "reload" });
-        if (response && response.ok) await cache.put(path, response);
+        const absoluteUrl = new URL(path, self.registration.scope).href;
+        const response = await fetch(absoluteUrl, { cache: "reload" });
+        if (response && response.ok) await cache.put(absoluteUrl, response);
       } catch (_) {}
     }));
     await self.skipWaiting();
@@ -38,13 +39,20 @@ self.addEventListener("fetch", event => {
       const response = await fetch(request);
       if (response && response.ok) {
         await cache.put(request, response.clone());
-        if (request.mode === "navigate") await cache.put("./index.html", response.clone());
+        if (request.mode === "navigate") {
+          const indexUrl = new URL("./index.html", self.registration.scope).href;
+          await cache.put(indexUrl, response.clone());
+        }
       }
       return response;
     } catch (_) {
       const cached = await cache.match(request);
       if (cached) return cached;
-      if (request.mode === "navigate") return (await cache.match("./index.html")) || (await cache.match("./"));
+      if (request.mode === "navigate") {
+        const indexUrl = new URL("./index.html", self.registration.scope).href;
+        const rootUrl = new URL("./", self.registration.scope).href;
+        return (await cache.match(indexUrl)) || (await cache.match(rootUrl));
+      }
       return Response.error();
     }
   })());
