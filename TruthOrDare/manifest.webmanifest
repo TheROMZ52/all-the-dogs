@@ -1,7 +1,8 @@
 {
+  "id": "./",
   "name": "جرئت یا حقیقت | بازی دورهمی",
   "short_name": "جرئت یا حقیقت",
-  "description": "بازی گروهی فارسی جرئت یا حقیقت؛ نصب‌پذیر و قابل استفاده آفلاین",
+  "description": "بازی گروهی فارسی جرئت یا حقیقت؛ نصب‌پذیر، آفلاین و با ذخیره خودکار",
   "lang": "fa",
   "dir": "rtl",
   "start_url": "./",
@@ -11,14 +12,19 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#171329",
-  "theme_color": "#171329",
+  "orientation": "portrait",
+  "background_color": "#100d1e",
+  "theme_color": "#100d1e",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
   "icons": [
     {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
